@@ -56,16 +56,37 @@ class LoginFormController: UIViewController {
         self.scrollView?.endEditing(true)
     }
     
-    @IBAction func signInButtonTapped(_ sender: Any) {
-        if let login = loginInput.text, let password = passwordInput.text {
-            if login == "login" && password == "passw0rd" {
-                print("You are in.")
-            } else {
-                print("Wrong.")
-            }
+    
+    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
+        
+        let checkResult = checkUserData()
+        
+        if !checkResult {
+            showLoginError()
+        }
+        return checkResult
+    }
+    
+    func checkUserData() -> Bool {
+        
+        guard let login = loginInput.text,
+            let password = passwordInput.text else { return false }
+        
+        if login == "login" && password == "passw0rd" {
+            return true
         } else {
-            print("Something is missig. Try again.")
+            return false
         }
     }
+    
+    func showLoginError() {
+        
+        let alter = UIAlertController(title: "Error", message: "Your data is wrong. Try again.", preferredStyle: .alert)
+        let action = UIAlertAction(title: "OK", style: .cancel, handler: nil)
+        alter.addAction(action)
+        present(alter, animated: true, completion: nil)
+        
+    }
+
     
 }
