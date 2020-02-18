@@ -8,7 +8,7 @@
 
 import UIKit
 
-class userPhotosController: UICollectionViewController {
+class UserPhotosController: UICollectionViewController {
     
     var userNameTitle: String?
     var photos = [UIImage]()
@@ -54,7 +54,7 @@ class userPhotosController: UICollectionViewController {
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "userPhotoCell", for: indexPath) as! userPhotosCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "userPhotoCell", for: indexPath) as! UserPhotosCell
     
         let photo = photos[indexPath.row]
         cell.userPhoto.image = photo

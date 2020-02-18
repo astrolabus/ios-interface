@@ -1,5 +1,5 @@
 //
-//  myFriendsController.swift
+//  globalGroupsController.swift
 //  VK_client
 //
 //  Created by Полина Войтенко on 11.02.2020.
@@ -8,14 +8,16 @@
 
 import UIKit
 
-class myFriendsController: UITableViewController {
+class GlobalGroupsController: UITableViewController {
     
-    var friends: [User] = [
-        User(userName: "John Smith", userIcon: UIImage(named: "oscars")!, userImages: [UIImage(named: "oscars")!]),
-        User(userName: "Chelsea Moore", userIcon: UIImage(named: "mando")!, userImages: [UIImage(named: "mando")!]),
-        User(userName: "Daisy Tucker", userIcon: UIImage(named: "rian")!, userImages: [UIImage(named: "rian")!])
+    var groups = [
+        Group(groupName: "Star Wars Explained", groupImage: UIImage(named: "sw-explained")),
+        Group(groupName: "Clone Wars Explained", groupImage: UIImage(named: "clone-wars-logo")),
+        Group(groupName: "Rebels Explained", groupImage: UIImage(named: "rebels-logo")),
+        Group(groupName: "Star Wars", groupImage: UIImage(named: "sw-logo")),
+        Group(groupName: "Clone Wars", groupImage: UIImage(named: "clone-wars")),
+        Group(groupName: "Rebels", groupImage: UIImage(named: "rebels"))
     ]
-    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,18 +38,21 @@ class myFriendsController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return friends.count
+        return groups.count
     }
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! myFriendsCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "GlobalCell", for: indexPath) as! GlobalsGroupsCell
 
-        let friendName = friends[indexPath.row].userName
-        let friendIcon = friends[indexPath.row].userIcon
+        let groupName = groups[indexPath.row].groupName
+        let groupImage = groups[indexPath.row].groupImage
         
-        cell.friendName.text = friendName
-        cell.friendIcon.image = friendIcon
+        cell.globalGroupName.text = groupName
+        cell.globalGroupImageView.image = groupImage
+        
+        cell.parentContainerView.shadow()
+        cell.childContainerView.circle()
 
         return cell
     }
@@ -88,27 +93,14 @@ class myFriendsController: UITableViewController {
     }
     */
 
-    
+    /*
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destination.
         // Pass the selected object to the new view controller.
-        if segue.identifier == "showPhotos" {
-            if let indexPath = tableView.indexPathForSelectedRow {
-                let userName = friends[indexPath.row].userName
-                
-                let destinationViewController = segue.destination as? userPhotosController
-                destinationViewController?.userNameTitle = userName
-                
-                for photo in friends[indexPath.row].userImages {
-                    destinationViewController?.photos.append(photo)
-                }
-            }
-            
-        }
     }
-
+    */
 
 }
