@@ -1,5 +1,5 @@
 //
-//  globalGroupsController.swift
+//  myFriendsController.swift
 //  VK_client
 //
 //  Created by Полина Войтенко on 11.02.2020.
@@ -8,16 +8,41 @@
 
 import UIKit
 
-class globalGroupsController: UITableViewController {
+class MyFriendsController: UITableViewController {
     
-    var groups = [
-        Group(groupName: "Star Wars Explained", groupImage: UIImage(named: "oscars")),
-        Group(groupName: "Clone Wars Explained", groupImage: UIImage(named: "oscars")),
-        Group(groupName: "Rebels Explained", groupImage: UIImage(named: "oscars")),
-        Group(groupName: "Star Wars", groupImage: UIImage(named: "oscars")),
-        Group(groupName: "Clone Wars", groupImage: UIImage(named: "oscars")),
-        Group(groupName: "Rebels", groupImage: UIImage(named: "oscars"))
+    var friends: [User] = [
+        User(userName: "Anakin Skywalker",
+             userIcon: UIImage(named: "anakin")!,
+             userImages: [UIImage(named: "oscars")!, UIImage(named: "padme")!]),
+        User(userName: "Ashoka Tano",
+             userIcon: UIImage(named: "ashoka")!,
+             userImages: [UIImage(named: "mando")!, UIImage(named: "rex")!]),
+        User(userName: "Padme Amidala",
+             userIcon: UIImage(named: "padme")!,
+             userImages: [UIImage(named: "rian")!, UIImage(named: "anakin")!]),
+        User(userName: "Din Djarin",
+             userIcon: UIImage(named: "din")!,
+             userImages: [UIImage(named: "oscars")!, UIImage(named: "mando")!]),
+        User(userName: "Leia Organa",
+             userIcon: UIImage(named: "leia")!,
+             userImages: [UIImage(named: "mando")!, UIImage(named: "han")!]),
+        User(userName: "Ezra Bridger",
+             userIcon: UIImage(named: "ezra")!,
+             userImages: [UIImage(named: "rian")!, UIImage(named: "mando")!]),
+        User(userName: "Han Solo",
+             userIcon: UIImage(named: "han")!,
+             userImages: [UIImage(named: "oscars")!, UIImage(named: "leia")!]),
+        User(userName: "Rey",
+             userIcon: UIImage(named: "rey")!,
+             userImages: [UIImage(named: "mando")!, UIImage(named: "ben")!]),
+        User(userName: "Rex",
+             userIcon: UIImage(named: "rex")!,
+             userImages: [UIImage(named: "rian")!, UIImage(named: "ashoka")!]),
+        User(userName: "Ben Solo",
+             userIcon: UIImage(named: "ben")!,
+             userImages: [UIImage(named: "rian")!, UIImage(named: "rey")!])
     ]
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,18 +63,21 @@ class globalGroupsController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return groups.count
+        return friends.count
     }
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "GlobalCell", for: indexPath) as! globalsGroupsCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! MyFriendsCell
 
-        let groupName = groups[indexPath.row].groupName
-        let groupImage = groups[indexPath.row].groupImage
+        let friendName = friends[indexPath.row].userName
+        let friendIcon = friends[indexPath.row].userIcon
         
-        cell.globalGroupName.text = groupName
-        cell.globalGroupImage.image = groupImage
+        cell.friendName.text = friendName
+        cell.friendIconImageView.image = friendIcon
+        
+        cell.parentContainerView.shadow()
+        cell.childContainerView.circle()
 
         return cell
     }
@@ -90,14 +118,27 @@ class globalGroupsController: UITableViewController {
     }
     */
 
-    /*
+    
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destination.
         // Pass the selected object to the new view controller.
+        if segue.identifier == "showPhotos" {
+            if let indexPath = tableView.indexPathForSelectedRow {
+                let userName = friends[indexPath.row].userName
+                
+                let destinationViewController = segue.destination as? UserPhotosController
+                destinationViewController?.userNameTitle = userName
+                
+                for photo in friends[indexPath.row].userImages {
+                    destinationViewController?.photos.append(photo)
+                }
+            }
+            
+        }
     }
-    */
+
 
 }

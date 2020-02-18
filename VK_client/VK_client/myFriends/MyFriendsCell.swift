@@ -1,5 +1,5 @@
 //
-//  globalsGroupsCell.swift
+//  myFriendsCell.swift
 //  VK_client
 //
 //  Created by Полина Войтенко on 11.02.2020.
@@ -8,10 +8,15 @@
 
 import UIKit
 
-class globalsGroupsCell: UITableViewCell {
+class MyFriendsCell: UITableViewCell {
+
+    @IBOutlet weak var friendName: UILabel!
     
-    @IBOutlet weak var globalGroupName: UILabel!
-    @IBOutlet weak var globalGroupImage: UIImageView!
+    @IBOutlet weak var friendIconImageView: UIImageView!
+    @IBOutlet weak var childContainerView: ChildViewShape!
+    @IBOutlet weak var parentContainerView: ParentViewShadow!
+    
+    
     
     override func awakeFromNib() {
         super.awakeFromNib()

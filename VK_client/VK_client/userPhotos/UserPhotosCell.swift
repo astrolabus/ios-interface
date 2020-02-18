@@ -8,8 +8,9 @@
 
 import UIKit
 
-class userPhotosCell: UICollectionViewCell {
+class UserPhotosCell: UICollectionViewCell {
     
     @IBOutlet weak var userPhoto: UIImageView!
+    @IBOutlet weak var likesCounterControl: PhotoLikesCounterControl!
     
 }

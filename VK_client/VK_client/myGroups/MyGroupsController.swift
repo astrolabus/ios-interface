@@ -8,7 +8,7 @@
 
 import UIKit
 
-class myGroupsController: UITableViewController {
+class MyGroupsController: UITableViewController {
     
     var myGroups = [Group]()
 
@@ -34,20 +34,23 @@ class myGroupsController: UITableViewController {
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "GroupCell", for: indexPath) as! myGroupsCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "GroupCell", for: indexPath) as! MyGroupsCell
 
         let groupName = myGroups[indexPath.row].groupName
         let groupImage = myGroups[indexPath.row].groupImage
         
         cell.groupName.text = groupName
-        cell.groupImage.image = groupImage
+        cell.myGroupImageView.image = groupImage
+        
+        cell.parentContainerView.shadow()
+        cell.childContainerView.circle()
 
         return cell
     }
     
     @IBAction func addGroup(segue: UIStoryboardSegue) {
         if segue.identifier == "addGroup" {
-            guard let globalGroupsController = segue.source as? globalGroupsController else { return }
+            guard let globalGroupsController = segue.source as? GlobalGroupsController else { return }
             
             if let indexPath = globalGroupsController.tableView.indexPathForSelectedRow {
                 let group = globalGroupsController.groups[indexPath.row]
