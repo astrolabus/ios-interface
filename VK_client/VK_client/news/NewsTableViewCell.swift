@@ -1,21 +1,21 @@
 //
-//  myGroupsCell.swift
+//  NewsTableViewCell.swift
 //  VK_client
 //
-//  Created by Полина Войтенко on 11.02.2020.
+//  Created by Полина Войтенко on 27.02.2020.
 //  Copyright © 2020 Полина Войтенко. All rights reserved.
 //
 
 import UIKit
 
-class MyGroupsCell: UITableViewCell {
+class NewsTableViewCell: UITableViewCell {
     
-    @IBOutlet weak var groupName: UILabel!
+    @IBOutlet weak var userIconImageView: UIImageView!
+    @IBOutlet weak var userNameLabel: UILabel!
+    @IBOutlet weak var postDateLabel: UILabel!
     
-    @IBOutlet weak var myGroupImageView: UIImageView!
-    @IBOutlet weak var childContainerView: ShapeContainer!
-    @IBOutlet weak var parentContainerView: ShadowContainer!
-    
+    @IBOutlet weak var postTextLabel: UILabel!
+    @IBOutlet weak var postImageView: UIImageView!
     
     override func awakeFromNib() {
         super.awakeFromNib()

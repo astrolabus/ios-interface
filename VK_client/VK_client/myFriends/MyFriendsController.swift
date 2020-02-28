@@ -10,6 +10,8 @@ import UIKit
 
 class MyFriendsController: UITableViewController {
     
+    @IBOutlet weak var friendsSearchBar: UISearchBar!
+    
     var friends: [User] = [
         User(userName: "Anakin Skywalker",
              userIcon: UIImage(named: "anakin")!,
@@ -32,10 +34,10 @@ class MyFriendsController: UITableViewController {
         User(userName: "Han Solo",
              userIcon: UIImage(named: "han")!,
              userImages: [UIImage(named: "oscars")!, UIImage(named: "leia")!]),
-        User(userName: "Rey",
+        User(userName: "Rey Solo",
              userIcon: UIImage(named: "rey")!,
              userImages: [UIImage(named: "mando")!, UIImage(named: "ben")!]),
-        User(userName: "Rex",
+        User(userName: "Rex Clone",
              userIcon: UIImage(named: "rex")!,
              userImages: [UIImage(named: "rian")!, UIImage(named: "ashoka")!]),
         User(userName: "Ben Solo",
@@ -43,88 +45,110 @@ class MyFriendsController: UITableViewController {
              userImages: [UIImage(named: "rian")!, UIImage(named: "rey")!])
     ]
     
+    lazy var sortedFriends: [[User]] = {
+        return friends.sorted{ (lhs, rhs) in return lhs.getSurname() < rhs.getSurname() }.reduce([[User]]()) { (result, element) -> [[User]] in
+            guard var last = result.last else { return [[element]] }
+            var collection = result
+            
+            if element.getSurname().first == result.last?.first?.getSurname().first {
+                last.append(element)
+                collection[collection.count - 1] = last
+            } else {
+                collection.append([element])
+            }
+            
+            return collection
+        }
+    }()
+    
+    var searchedFriends = [User]()
+    var isSeraching = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
+        friendsSearchBar.delegate = self
     }
 
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 1
+        if isSeraching {
+            return 1
+        } else {
+            return sortedFriends.count
+        }
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return friends.count
+        if isSeraching {
+            return searchedFriends.count
+        } else {
+            return sortedFriends[section].count
+        }
     }
-
+    
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let sectionHeader = UIView()
+        sectionHeader.backgroundColor = UIColor.lightGray.withAlphaComponent(0.1)
+        
+        let sectionCharacter = UILabel(frame: CGRect(x: 10, y: 5, width: 20, height: 20))
+        sectionCharacter.text = String(sortedFriends[section][0].getSurname().first ?? "?")
+        sectionCharacter.textColor = .black
+        sectionHeader.addSubview(sectionCharacter)
+        
+        return sectionHeader
+    }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! MyFriendsCell
-
-        let friendName = friends[indexPath.row].userName
-        let friendIcon = friends[indexPath.row].userIcon
         
-        cell.friendName.text = friendName
-        cell.friendIconImageView.image = friendIcon
+        if isSeraching {
+            cell.friendName.text = searchedFriends[indexPath.row].userName
+            cell.friendIconImageView.image = searchedFriends[indexPath.row].userIcon
+        } else {
+            cell.friendName.text = sortedFriends[indexPath.section][indexPath.row].userName
+            cell.friendIconImageView.image = sortedFriends[indexPath.section][indexPath.row].userIcon
+        }
         
         cell.parentContainerView.shadow()
         cell.childContainerView.circle()
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tap(recognizer:)))
+        cell.childContainerView.addGestureRecognizer(tapGesture)
 
         return cell
     }
     
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
+    // MARK: - Cell Icon Animation
+    
+    @objc func tap(recognizer: UITapGestureRecognizer) {
+        if recognizer.state == .ended {
+            let tapLocation = recognizer.location(in: self.tableView)
+            if let tapIndexPath = self.tableView.indexPathForRow(at: tapLocation) {
+                if let tappedCell = self.tableView.cellForRow(at: tapIndexPath) as? MyFriendsCell {
+                    UIView.animate(withDuration: 0.1, animations: {
+                        tappedCell.childContainerView.frame.size.width -= 5
+                        tappedCell.childContainerView.frame.size.height -= 5
+                        
+                        tappedCell.friendIconImageView.frame.size.width -= 5
+                        tappedCell.friendIconImageView.frame.size.height -= 5
+                    }, completion:  { _ in
+                        UIView.animate(withDuration: 1.5, delay: 0.1, usingSpringWithDamping: 0.5, initialSpringVelocity: 0, options: [], animations: {
+                            tappedCell.childContainerView.frame.size.width += 5
+                            tappedCell.childContainerView.frame.size.height += 5
+                            
+                            tappedCell.friendIconImageView.frame.size.width += 5
+                            tappedCell.friendIconImageView.frame.size.height += 5
+                        })
+                    })
+                }
+            }
+        }
     }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
 
     
     // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
         if segue.identifier == "showPhotos" {
             if let indexPath = tableView.indexPathForSelectedRow {
                 let userName = friends[indexPath.row].userName
@@ -136,9 +160,23 @@ class MyFriendsController: UITableViewController {
                     destinationViewController?.photos.append(photo)
                 }
             }
-            
         }
     }
+    
+}
 
+// MARK: - SearchBar
 
+extension MyFriendsController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if friendsSearchBar.text == nil || friendsSearchBar.text == "" {
+            isSeraching = false
+            view.endEditing(true)
+            tableView.reloadData()
+        } else {
+            isSeraching = true
+            searchedFriends = friends.filter( {$0.userName.range(of: friendsSearchBar.text!, options: .caseInsensitive) != nil} )
+            tableView.reloadData()
+        }
+    }
 }

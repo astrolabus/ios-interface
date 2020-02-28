@@ -12,6 +12,11 @@ struct User {
     var userName: String
     var userIcon: UIImage
     var userImages: [UIImage] = []
+    
+    func getSurname() -> String {
+        let nameArr = userName.components(separatedBy: " ")
+        return nameArr[1]
+    }
 }
 
 

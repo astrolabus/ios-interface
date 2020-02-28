@@ -58,7 +58,8 @@ class UserPhotosController: UICollectionViewController {
     
         let photo = photos[indexPath.row]
         cell.userPhoto.image = photo
-    
+        
+        
         return cell
     }
 

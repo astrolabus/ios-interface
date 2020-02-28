@@ -8,7 +8,7 @@
 
 import UIKit
 
-@IBDesignable class ParentViewShadow: UIView {
+@IBDesignable class ShadowContainer: UIView {
     
     @IBInspectable var radius: CGFloat = 5.0
     @IBInspectable var opacity: Float = 0.7
