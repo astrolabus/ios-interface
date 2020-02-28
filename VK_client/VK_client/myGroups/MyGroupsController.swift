@@ -10,17 +10,17 @@ import UIKit
 
 class MyGroupsController: UITableViewController {
     
+    @IBOutlet weak var myGroupsSearchBar: UISearchBar!
+    
     var myGroups = [Group]()
+    
+    var isSearching = false
+    var mySearchedGroups = [Group]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
-    }
+        myGroupsSearchBar.delegate = self
+        }
 
     // MARK: - Table view data source
 
@@ -29,24 +29,62 @@ class MyGroupsController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return myGroups.count
+        if isSearching {
+            return mySearchedGroups.count
+        } else {
+            return myGroups.count
+        }
     }
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "GroupCell", for: indexPath) as! MyGroupsCell
-
-        let groupName = myGroups[indexPath.row].groupName
-        let groupImage = myGroups[indexPath.row].groupImage
         
-        cell.groupName.text = groupName
-        cell.myGroupImageView.image = groupImage
+        if isSearching {
+            cell.groupName.text = mySearchedGroups[indexPath.row].groupName
+            cell.myGroupImageView.image  = mySearchedGroups[indexPath.row].groupImage
+        } else {
+            cell.groupName.text = myGroups[indexPath.row].groupName
+            cell.myGroupImageView.image = myGroups[indexPath.row].groupImage
+        }
         
         cell.parentContainerView.shadow()
         cell.childContainerView.circle()
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tap(recognizer:)))
+        cell.childContainerView.addGestureRecognizer(tapGesture)
 
         return cell
     }
+    
+    // MARK: - Cell Icon Animation
+    
+    @objc func tap(recognizer: UITapGestureRecognizer) {
+        if recognizer.state == .ended {
+            let tapLocation = recognizer.location(in: self.tableView)
+            if let tapIndexPath = self.tableView.indexPathForRow(at: tapLocation) {
+                if let tappedCell = self.tableView.cellForRow(at: tapIndexPath) as? MyGroupsCell {
+                    UIView.animate(withDuration: 0.1, animations: {
+                        tappedCell.childContainerView.frame.size.width -= 5
+                        tappedCell.childContainerView.frame.size.height -= 5
+                        
+                        tappedCell.myGroupImageView.frame.size.width -= 5
+                        tappedCell.myGroupImageView.frame.size.height -= 5
+                    }, completion:  { _ in
+                        UIView.animate(withDuration: 1.5, delay: 0.1, usingSpringWithDamping: 0.5, initialSpringVelocity: 0, options: [], animations: {
+                            tappedCell.childContainerView.frame.size.width += 5
+                            tappedCell.childContainerView.frame.size.height += 5
+                            
+                            tappedCell.myGroupImageView.frame.size.width += 5
+                            tappedCell.myGroupImageView.frame.size.height += 5
+                        })
+                    })
+                }
+            }
+        }
+    }
+    
+    //MARK: - Adding new groups
     
     @IBAction func addGroup(segue: UIStoryboardSegue) {
         if segue.identifier == "addGroup" {
@@ -68,42 +106,18 @@ class MyGroupsController: UITableViewController {
             tableView.deleteRows(at: [indexPath], with: .fade)
         }
     }
+}
 
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
+extension MyGroupsController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if myGroupsSearchBar.text == nil || myGroupsSearchBar.text == "" {
+            isSearching = false
+            view.endEditing(true)
+            tableView.reloadData()
+        } else {
+            isSearching = true
+            mySearchedGroups = myGroups.filter( {$0.groupName.range(of: myGroupsSearchBar.text!, options: .caseInsensitive) != nil} )
+            tableView.reloadData()
+        }
     }
-    */
-
-    
-    
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

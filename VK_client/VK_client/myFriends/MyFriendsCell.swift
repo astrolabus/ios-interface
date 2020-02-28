@@ -13,8 +13,8 @@ class MyFriendsCell: UITableViewCell {
     @IBOutlet weak var friendName: UILabel!
     
     @IBOutlet weak var friendIconImageView: UIImageView!
-    @IBOutlet weak var childContainerView: ChildViewShape!
-    @IBOutlet weak var parentContainerView: ParentViewShadow!
+    @IBOutlet weak var childContainerView: ShapeContainer!
+    @IBOutlet weak var parentContainerView: ShadowContainer!
     
     
     

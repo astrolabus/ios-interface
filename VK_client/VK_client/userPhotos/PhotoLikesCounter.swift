@@ -69,9 +69,29 @@ class PhotoLikesCounterControl: UIControl {
             heartButton.tintColor = .red
             likesCountLabel.textColor = UIColor.red
             
+            UIView.animate(withDuration: 1,
+                           delay: 0,
+                           usingSpringWithDamping: 0.5,
+                           initialSpringVelocity: 0,
+                           options: [],
+                           animations: {
+                            self.heartButton.frame.size.width -= 5
+                            self.heartButton.frame.size.height -= 5
+            })
+            
             likeCount += 1
             
             likesCountLabel.text = String(likeCount)
+            
+            likesCountLabel.transform = CGAffineTransform(translationX: -stackView.frame.height, y: 0)
+            UIView.animate(withDuration: 1,
+                           delay: 0,
+                           usingSpringWithDamping: 0.5,
+                           initialSpringVelocity: 0,
+                           options: [.curveEaseOut],
+                           animations: {
+                            self.likesCountLabel.transform = .identity
+            })
             
         } else {
             
@@ -79,9 +99,29 @@ class PhotoLikesCounterControl: UIControl {
             heartButton.tintColor = .gray
             likesCountLabel.textColor = UIColor.gray
             
+            UIView.animate(withDuration: 1,
+                           delay: 0,
+                           usingSpringWithDamping: 0.5,
+                           initialSpringVelocity: 0,
+                           options: [],
+                           animations: {
+                            self.heartButton.frame.size.width += 5
+                            self.heartButton.frame.size.height += 5
+            })
+            
             likeCount -= 1
             
             likesCountLabel.text = String(likeCount)
+            
+            likesCountLabel.transform = CGAffineTransform(translationX:  -stackView.frame.height, y: 0)
+            UIView.animate(withDuration: 1,
+                           delay: 0,
+                           usingSpringWithDamping: 0.5,
+                           initialSpringVelocity: 0,
+                           options: [.curveEaseOut],
+                           animations: {
+                            self.likesCountLabel.transform = .identity
+            })
         }
     }
     

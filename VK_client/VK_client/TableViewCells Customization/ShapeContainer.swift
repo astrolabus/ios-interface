@@ -8,10 +8,15 @@
 
 import UIKit
 
-class ChildViewShape: UIView {
+class ShapeContainer: UIView {
 
     func circle() {
         layer.cornerRadius = frame.height / 2
+        layer.masksToBounds = true
+    }
+    
+    func smoothedCorners() {
+        layer.cornerRadius = 20
         layer.masksToBounds = true
     }
 
