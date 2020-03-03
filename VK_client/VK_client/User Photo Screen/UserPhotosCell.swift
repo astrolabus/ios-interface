@@ -10,6 +10,7 @@ import UIKit
 
 class UserPhotosCell: UICollectionViewCell {
     
+    @IBOutlet weak var containerView: UIView!
     @IBOutlet weak var userPhoto: UIImageView!
     @IBOutlet weak var likesCounterControl: PhotoLikesCounterControl!
     

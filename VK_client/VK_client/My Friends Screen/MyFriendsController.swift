@@ -87,6 +87,10 @@ class MyFriendsController: UITableViewController {
         }
     }
     
+    override func sectionIndexTitles(for tableView: UITableView) -> [String]? {
+        return Array(Set(friends.compactMap{$0.getSurname().first?.uppercased()})).sorted()
+    }
+    
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let sectionHeader = UIView()
         sectionHeader.backgroundColor = UIColor.lightGray.withAlphaComponent(0.1)
@@ -151,14 +155,27 @@ class MyFriendsController: UITableViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showPhotos" {
             if let indexPath = tableView.indexPathForSelectedRow {
-                let userName = friends[indexPath.row].userName
+                var userName: String = "" //friends[indexPath.row].userName
                 
                 let destinationViewController = segue.destination as? UserPhotosController
-                destinationViewController?.userNameTitle = userName
                 
-                for photo in friends[indexPath.row].userImages {
-                    destinationViewController?.photos.append(photo)
+                if isSeraching {
+                    userName = searchedFriends[indexPath.row].userName
+                    destinationViewController?.userNameTitle = userName
+                    
+                    for photo in searchedFriends[indexPath.row].userImages {
+                        destinationViewController?.photos.append(photo)
+                    }
+                    
+                } else {
+                    userName = sortedFriends[indexPath.section][indexPath.row].userName
+                    destinationViewController?.userNameTitle = userName
+                    
+                    for photo in sortedFriends[indexPath.section][indexPath.row].userImages {
+                        destinationViewController?.photos.append(photo)
+                    }
                 }
+                
             }
         }
     }
