@@ -36,6 +36,7 @@
 		2ED82978240E430E00C0D7B3 /* CustonPopAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED82977240E430E00C0D7B3 /* CustonPopAnimator.swift */; };
 		2ED8297A240E44C300C0D7B3 /* CustomNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED82979240E44C300C0D7B3 /* CustomNavigationController.swift */; };
 		2ED8297C240E654500C0D7B3 /* CustomInteractiveTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED8297B240E654500C0D7B3 /* CustomInteractiveTransition.swift */; };
+		2ED8299D241BA46F00C0D7B3 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED8299C241BA46F00C0D7B3 /* Session.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -70,6 +71,7 @@
 		2ED82977240E430E00C0D7B3 /* CustonPopAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustonPopAnimator.swift; sourceTree = "<group>"; };
 		2ED82979240E44C300C0D7B3 /* CustomNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigationController.swift; sourceTree = "<group>"; };
 		2ED8297B240E654500C0D7B3 /* CustomInteractiveTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomInteractiveTransition.swift; sourceTree = "<group>"; };
+		2ED8299C241BA46F00C0D7B3 /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +104,7 @@
 		2E322E3523E2DDED005DF1F6 /* VK_client */ = {
 			isa = PBXGroup;
 			children = (
+				2ED82999241BA2FA00C0D7B3 /* Session Info */,
 				2ED82972240E325A00C0D7B3 /* NC Animations */,
 				2ED829672409199500C0D7B3 /* Animations */,
 				2ED82960240823D000C0D7B3 /* News Screen */,
@@ -208,6 +211,14 @@
 			path = "NC Animations";
 			sourceTree = "<group>";
 		};
+		2ED82999241BA2FA00C0D7B3 /* Session Info */ = {
+			isa = PBXGroup;
+			children = (
+				2ED8299C241BA46F00C0D7B3 /* Session.swift */,
+			);
+			path = "Session Info";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -296,6 +307,7 @@
 				2E322E3923E2DDED005DF1F6 /* SceneDelegate.swift in Sources */,
 				2ED829712409C29F00C0D7B3 /* ShowImageViewController.swift in Sources */,
 				2ED8297A240E44C300C0D7B3 /* CustomNavigationController.swift in Sources */,
+				2ED8299D241BA46F00C0D7B3 /* Session.swift in Sources */,
 				2ED82978240E430E00C0D7B3 /* CustonPopAnimator.swift in Sources */,
 				2E37049B23FBFF88002B115C /* PhotoLikesCounter.swift in Sources */,
 				2E54BD7923F2D02B00056EC0 /* GlobalsGroupsCell.swift in Sources */,

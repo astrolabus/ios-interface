@@ -77,6 +77,7 @@ class LoginFormController: UIViewController {
         } else {
             return false
         }
+        
     }
     
     func showLoginError() {
