@@ -34,8 +34,8 @@ class AuthorizationViewController: UIViewController {
         webView.navigationDelegate = self
         webView.load(request)
         
-        //webView.cleanAllCookies()
-        //webView.refreshCookies()
+        webView.cleanAllCookies()
+        webView.refreshCookies()
     }
 }
 
@@ -77,7 +77,6 @@ extension WKWebView {
         WKWebsiteDataStore.default().fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { records in
             records.forEach { record in
                 WKWebsiteDataStore.default().removeData(ofTypes: record.dataTypes, for: [record], completionHandler: {})
-                //print("Cookie ::: \(record) deleted")
             }
         }
     }
