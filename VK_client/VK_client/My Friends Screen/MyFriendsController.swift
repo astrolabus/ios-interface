@@ -63,10 +63,14 @@ class MyFriendsController: UITableViewController {
     
     var searchedFriends = [User]()
     var isSeraching = false
+    
+    let vkClientServer = VKClientServer()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         friendsSearchBar.delegate = self
+        
+        vkClientServer.loadFriendsList()
     }
 
     // MARK: - Table view data source
@@ -116,40 +120,9 @@ class MyFriendsController: UITableViewController {
         
         cell.parentContainerView.shadow()
         cell.childContainerView.circle()
-        
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tap(recognizer:)))
-        cell.childContainerView.addGestureRecognizer(tapGesture)
 
         return cell
     }
-    
-    // MARK: - Cell Icon Animation
-    
-    @objc func tap(recognizer: UITapGestureRecognizer) {
-        if recognizer.state == .ended {
-            let tapLocation = recognizer.location(in: self.tableView)
-            if let tapIndexPath = self.tableView.indexPathForRow(at: tapLocation) {
-                if let tappedCell = self.tableView.cellForRow(at: tapIndexPath) as? MyFriendsCell {
-                    UIView.animate(withDuration: 0.1, animations: {
-                        tappedCell.childContainerView.frame.size.width -= 5
-                        tappedCell.childContainerView.frame.size.height -= 5
-                        
-                        tappedCell.friendIconImageView.frame.size.width -= 5
-                        tappedCell.friendIconImageView.frame.size.height -= 5
-                    }, completion:  { _ in
-                        UIView.animate(withDuration: 1.5, delay: 0.1, usingSpringWithDamping: 0.5, initialSpringVelocity: 0, options: [], animations: {
-                            tappedCell.childContainerView.frame.size.width += 5
-                            tappedCell.childContainerView.frame.size.height += 5
-                            
-                            tappedCell.friendIconImageView.frame.size.width += 5
-                            tappedCell.friendIconImageView.frame.size.height += 5
-                        })
-                    })
-                }
-            }
-        }
-    }
-
     
     // MARK: - Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
