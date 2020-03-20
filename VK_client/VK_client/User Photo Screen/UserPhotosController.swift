@@ -13,18 +13,14 @@ class UserPhotosController: UICollectionViewController {
     var userNameTitle: String?
     var photos = [UIImage]()
     
+    let vkClientServer = VKClientServer()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         title = userNameTitle
-
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Register cell classes
-//        self.collectionView!.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "userPhotoCell")
-
-        // Do any additional setup after loading the view.
+        
+        vkClientServer.loadUserPhotos()
     }
 
     
