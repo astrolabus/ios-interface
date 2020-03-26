@@ -12,19 +12,22 @@ class MyGroupsController: UITableViewController {
     
     @IBOutlet weak var myGroupsSearchBar: UISearchBar!
     
+    let vkClientServer = VKClientServer()
+    
     var myGroups = [Group]()
     
     var isSearching = false
     var mySearchedGroups = [Group]()
-    
-    let vkClientServer = VKClientServer()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         myGroupsSearchBar.delegate = self
         
-        vkClientServer.loadUserGroups()
+        vkClientServer.loadUserGroups() { groups in
+            self.myGroups = groups
+            self.tableView.reloadData()
         }
+    }
 
     // MARK: - Table view data source
 
@@ -45,11 +48,11 @@ class MyGroupsController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "GroupCell", for: indexPath) as! MyGroupsCell
         
         if isSearching {
-            cell.groupName.text = mySearchedGroups[indexPath.row].groupName
-            cell.myGroupImageView.image  = mySearchedGroups[indexPath.row].groupImage
+            cell.groupName.text = mySearchedGroups[indexPath.row].name
+            cell.myGroupImageView.image  = vkClientServer.getPhotoByURL(url: mySearchedGroups[indexPath.row].photo_100)
         } else {
-            cell.groupName.text = myGroups[indexPath.row].groupName
-            cell.myGroupImageView.image = myGroups[indexPath.row].groupImage
+            cell.groupName.text = myGroups[indexPath.row].name
+            cell.myGroupImageView.image = vkClientServer.getPhotoByURL(url: myGroups[indexPath.row].photo_100)
         }
         
         cell.parentContainerView.shadow()
@@ -90,7 +93,7 @@ extension MyGroupsController: UISearchBarDelegate {
             tableView.reloadData()
         } else {
             isSearching = true
-            mySearchedGroups = myGroups.filter( {$0.groupName.range(of: myGroupsSearchBar.text!, options: .caseInsensitive) != nil} )
+            mySearchedGroups = myGroups.filter( {$0.name.range(of: myGroupsSearchBar.text!, options: .caseInsensitive) != nil} )
             tableView.reloadData()
         }
     }

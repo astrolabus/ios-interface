@@ -9,14 +9,10 @@
 import UIKit
 
 struct User {
-    var userName: String
-    var userIcon: UIImage
-    var userImages: [UIImage] = []
-    
-    func getSurname() -> String {
-        let nameArr = userName.components(separatedBy: " ")
-        return nameArr[1]
-    }
+    var first_name = ""
+    var last_name = ""
+    var photo_100 = ""
+    var id = 0
 }
 
 

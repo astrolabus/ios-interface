@@ -4,5 +4,6 @@ use_frameworks!
 target 'VK_client' do
 
   pod 'Alamofire', '~> 5.0'
+  pod 'SwiftyJSON', '~> 4.0'
 
 end

@@ -9,6 +9,6 @@
 import UIKit
 
 struct Group {
-    var groupName: String
-    var groupImage: UIImage?
+    var name = ""
+    var photo_100 = ""
 }
