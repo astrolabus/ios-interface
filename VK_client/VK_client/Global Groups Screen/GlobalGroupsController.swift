@@ -13,25 +13,15 @@ class GlobalGroupsController: UITableViewController {
     @IBOutlet weak var globalGroupsSearchBar: UISearchBar!
     
     
-    var groups = [
-        Group(groupName: "Star Wars Explained", groupImage: UIImage(named: "sw-explained")),
-        Group(groupName: "Clone Wars Explained", groupImage: UIImage(named: "clone-wars-logo")),
-        Group(groupName: "Rebels Explained", groupImage: UIImage(named: "rebels-logo")),
-        Group(groupName: "Star Wars", groupImage: UIImage(named: "sw-logo")),
-        Group(groupName: "Clone Wars", groupImage: UIImage(named: "clone-wars")),
-        Group(groupName: "Rebels", groupImage: UIImage(named: "rebels"))
-    ]
+    var groups: [Group] = []
     
     var isSearching = false
     var searchedGroups = [Group]()
-    
-    let vkClientServer = VKClientServer()
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
         globalGroupsSearchBar.delegate = self
-        
-        vkClientServer.loadSearchedGroups(groupName: "twit")
     }
 
     // MARK: - Table view data source
@@ -53,11 +43,11 @@ class GlobalGroupsController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "GlobalCell", for: indexPath) as! GlobalsGroupsCell
         
         if isSearching {
-            cell.globalGroupName.text = searchedGroups[indexPath.row].groupName
-            cell.globalGroupImageView.image = searchedGroups[indexPath.row].groupImage
+            cell.globalGroupName.text = searchedGroups[indexPath.row].name
+            cell.globalGroupImageView.image = UIImage(named: "rian")
         } else {
-            cell.globalGroupName.text = groups[indexPath.row].groupName
-            cell.globalGroupImageView.image = groups[indexPath.row].groupImage
+            cell.globalGroupName.text = groups[indexPath.row].name
+            cell.globalGroupImageView.image = UIImage(named: "rian")
         }
         
         cell.parentContainerView.shadow()
@@ -77,7 +67,7 @@ extension GlobalGroupsController: UISearchBarDelegate {
             tableView.reloadData()
         } else {
             isSearching = true
-            searchedGroups = groups.filter( {$0.groupName.range(of: globalGroupsSearchBar.text!, options: .caseInsensitive) != nil} )
+            searchedGroups = groups.filter( {$0.name.range(of: globalGroupsSearchBar.text!, options: .caseInsensitive) != nil} )
             tableView.reloadData()
         }
     }
