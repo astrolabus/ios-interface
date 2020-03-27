@@ -14,7 +14,6 @@
 		2E322E4123E2DDED005DF1F6 /* VK_client.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2E322E3F23E2DDED005DF1F6 /* VK_client.xcdatamodeld */; };
 		2E322E4323E2DDF5005DF1F6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2E322E4223E2DDF5005DF1F6 /* Assets.xcassets */; };
 		2E322E4623E2DDF5005DF1F6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2E322E4423E2DDF5005DF1F6 /* LaunchScreen.storyboard */; };
-		2E322E4E23E2E1A6005DF1F6 /* LoginFormController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E322E4D23E2E1A6005DF1F6 /* LoginFormController.swift */; };
 		2E37049723FBF7CF002B115C /* ShadowContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E37049623FBF7CF002B115C /* ShadowContainer.swift */; };
 		2E37049923FBF7E4002B115C /* ShapeContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E37049823FBF7E4002B115C /* ShapeContainer.swift */; };
 		2E37049B23FBFF88002B115C /* PhotoLikesCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E37049A23FBFF88002B115C /* PhotoLikesCounter.swift */; };
@@ -53,7 +52,6 @@
 		2E322E4223E2DDF5005DF1F6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2E322E4523E2DDF5005DF1F6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2E322E4723E2DDF5005DF1F6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		2E322E4D23E2E1A6005DF1F6 /* LoginFormController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginFormController.swift; sourceTree = "<group>"; };
 		2E37049623FBF7CF002B115C /* ShadowContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowContainer.swift; sourceTree = "<group>"; };
 		2E37049823FBF7E4002B115C /* ShapeContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShapeContainer.swift; sourceTree = "<group>"; };
 		2E37049A23FBFF88002B115C /* PhotoLikesCounter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLikesCounter.swift; sourceTree = "<group>"; };
@@ -131,7 +129,6 @@
 				2E54BD7023F2C43000056EC0 /* My Groups Screen */,
 				2E322E3623E2DDED005DF1F6 /* AppDelegate.swift */,
 				2E322E3823E2DDED005DF1F6 /* SceneDelegate.swift */,
-				2E322E4D23E2E1A6005DF1F6 /* LoginFormController.swift */,
 				2E322E3C23E2DDED005DF1F6 /* Main.storyboard */,
 				2E322E4223E2DDF5005DF1F6 /* Assets.xcassets */,
 				2E322E4423E2DDF5005DF1F6 /* LaunchScreen.storyboard */,
@@ -389,7 +386,6 @@
 				2E322E4123E2DDED005DF1F6 /* VK_client.xcdatamodeld in Sources */,
 				2ED82969240919C200C0D7B3 /* LoadingAnimationViewController.swift in Sources */,
 				2E54BD8623F2D68D00056EC0 /* MyFriendsCell.swift in Sources */,
-				2E322E4E23E2E1A6005DF1F6 /* LoginFormController.swift in Sources */,
 				2ED6225323F6C2170031AB3A /* UserPhotosCell.swift in Sources */,
 				2E54BD7F23F2D33200056EC0 /* MyGroupsCell.swift in Sources */,
 				2ED829622408240F00C0D7B3 /* NewsTableViewController.swift in Sources */,

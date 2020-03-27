@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import RealmSwift
 
-struct Group {
-    var name = ""
-    var photo_100 = ""
+class Group: Object {
+    @objc dynamic var name = ""
+    @objc dynamic var photo_100 = ""
 }

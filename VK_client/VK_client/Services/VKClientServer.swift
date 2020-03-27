@@ -9,6 +9,7 @@
 import Foundation
 import Alamofire
 import SwiftyJSON
+import RealmSwift
 
 class VKClientServer {
     
@@ -36,6 +37,8 @@ class VKClientServer {
                 guard let data = response.data else { return }
 
                 let users: [User] = self.parseUsers(data: data)
+                
+                self.saveUserData(users)
 
                 completion(users)
             }
@@ -62,6 +65,8 @@ class VKClientServer {
                 guard let data = response.data else { return }
 
                 let photos: [Photo] = self.parsePhotos(data: data)
+                
+                self.savePhotoData(photos)
 
                 completion(photos)
             }
@@ -89,6 +94,8 @@ class VKClientServer {
                 guard let data = response.data else { return }
 
                 let groups: [Group] = self.parseGroups(data: data)
+                
+                self.saveGroupData(groups)
 
                 completion(groups)
             }
@@ -114,13 +121,7 @@ class VKClientServer {
         }
         
     }
-    
-    func removeCookies() {
-        let cookieJar = HTTPCookieStorage.shared
-        for cookie in cookieJar.cookies! {
-            cookieJar.deleteCookie(cookie)
-        }
-    }
+
 }
 
 extension VKClientServer {
@@ -140,7 +141,6 @@ extension VKClientServer {
                 return users
             }
             
-            print("groups returned")
             return result
             
         } catch {
@@ -208,4 +208,44 @@ extension VKClientServer {
         
         return nil
     }
+}
+
+extension VKClientServer {
+    
+    func saveUserData(_ users: [User]) {
+        do {
+            let realm = try Realm()
+            realm.beginWrite()
+            realm.add(users)
+            try realm.commitWrite()
+        }
+        catch {
+            print("error while writing")
+        }
+    }
+    
+    func savePhotoData(_ photos: [Photo]) {
+        do {
+            let realm = try Realm()
+            realm.beginWrite()
+            realm.add(photos)
+            try realm.commitWrite()
+        }
+        catch {
+            print("error while writing")
+        }
+    }
+    
+    func saveGroupData(_ groups: [Group]) {
+        do {
+            let realm = try Realm()
+            realm.beginWrite()
+            realm.add(groups)
+            try realm.commitWrite()
+        }
+        catch {
+            print("error while writing")
+        }
+    }
+    
 }
