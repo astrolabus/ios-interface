@@ -7,12 +7,13 @@
 //
 
 import UIKit
+import RealmSwift
 
-struct User {
-    var first_name = ""
-    var last_name = ""
-    var photo_100 = ""
-    var id = 0
+class User: Object {
+    @objc dynamic var first_name = ""
+    @objc dynamic var last_name = ""
+    @objc dynamic var photo_100 = ""
+    @objc dynamic var id = 0
 }
 
 

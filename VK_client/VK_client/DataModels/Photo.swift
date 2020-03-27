@@ -7,9 +7,10 @@
 //
 
 import UIKit
+import RealmSwift
 
-class Photo {
-    var id = 0
-    var owner_id = 0
-    var url = ""
+class Photo: Object {
+    @objc dynamic var id = 0
+    @objc dynamic var owner_id = 0
+    @objc dynamic var url = ""
 }
