@@ -10,18 +10,23 @@ import UIKit
 
 class MyGroupsController: UITableViewController {
     
-    @IBOutlet weak var myGroupsSearchBar: UISearchBar!
+    private let searchController: UISearchController = .init()
     
     let vkClientServer = VKClientServer()
     
-    var myGroups = [Group]()
+    private var myGroups = [Group]()
+    private var mySearchedGroups = [Group]()
+    var groupArray: [Group] {
+        return Array(searchController.isActive ? mySearchedGroups : myGroups)
+    }
     
-    var isSearching = false
-    var mySearchedGroups = [Group]()
+    private var cachedPhotos = [String: UIImage]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        myGroupsSearchBar.delegate = self
+        
+        searchController.searchResultsUpdater = self
+        tableView.tableHeaderView = searchController.searchBar
         
         vkClientServer.loadUserGroups() { groups in
             self.myGroups = groups
@@ -36,23 +41,32 @@ class MyGroupsController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if isSearching {
-            return mySearchedGroups.count
-        } else {
-            return myGroups.count
+        return groupArray.count
+    }
+    
+    private func downloadPhoto(for url: String, indexPath: IndexPath) {
+        DispatchQueue.global().async {
+            if let photo = self.vkClientServer.getPhotoByURL(url: url) {
+                self.cachedPhotos[url] = photo
+                
+                DispatchQueue.main.async {
+                    self.tableView.reloadRows(at: [indexPath], with: .automatic)
+                }
+            }
         }
     }
-
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "GroupCell", for: indexPath) as! MyGroupsCell
         
-        if isSearching {
-            cell.groupName.text = mySearchedGroups[indexPath.row].name
-            cell.myGroupImageView.image  = vkClientServer.getPhotoByURL(url: mySearchedGroups[indexPath.row].photo_100)
+        cell.groupName.text = groupArray[indexPath.row].name
+        
+        let url = groupArray[indexPath.row].photo_100
+        
+        if let cached = cachedPhotos[url] {
+            cell.myGroupImageView.image = cached
         } else {
-            cell.groupName.text = myGroups[indexPath.row].name
-            cell.myGroupImageView.image = vkClientServer.getPhotoByURL(url: myGroups[indexPath.row].photo_100)
+            downloadPhoto(for: url, indexPath: indexPath)
         }
         
         cell.parentContainerView.shadow()
@@ -85,16 +99,12 @@ class MyGroupsController: UITableViewController {
     }
 }
 
-extension MyGroupsController: UISearchBarDelegate {
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        if myGroupsSearchBar.text == nil || myGroupsSearchBar.text == "" {
-            isSearching = false
-            view.endEditing(true)
-            tableView.reloadData()
-        } else {
-            isSearching = true
-            mySearchedGroups = myGroups.filter( {$0.name.range(of: myGroupsSearchBar.text!, options: .caseInsensitive) != nil} )
-            tableView.reloadData()
-        }
+// MARK: - SearchBar
+
+extension MyGroupsController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        guard let text = searchController.searchBar.text else { return }
+        mySearchedGroups = myGroups.filter( {$0.name.range(of: text, options: .caseInsensitive) != nil} )
+        tableView.reloadData()
     }
 }

@@ -28,11 +28,11 @@
             </objects>
             <point key="canvasLocation" x="1973" y="118"/>
         </scene>
-        <!--Friends-->
+        <!--Друзья-->
         <scene sceneID="Yqb-0G-fAB">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="sQh-WW-kTE" customClass="CustomNavigationController" customModule="VK_client" customModuleProvider="target" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Friends" id="jh8-sf-cab"/>
+                    <tabBarItem key="tabBarItem" title="Друзья" id="jh8-sf-cab"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="lYL-jf-3vb">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="56"/>
@@ -47,7 +47,7 @@
             </objects>
             <point key="canvasLocation" x="3179.7101449275365" y="-208.25892857142856"/>
         </scene>
-        <!--My Friends-->
+        <!--Мои Друзья-->
         <scene sceneID="Jd5-sY-gsA">
             <objects>
                 <tableViewController id="qVx-qN-FY6" customClass="MyFriendsController" customModule="VK_client" customModuleProvider="target" sceneMemberID="viewController">
@@ -55,14 +55,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                        <searchBar key="tableHeaderView" contentMode="redraw" id="m7u-Vl-cyH">
-                            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                            <textInputTraits key="textInputTraits"/>
-                        </searchBar>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="FriendCell" id="6lV-eC-8UW" customClass="MyFriendsCell" customModule="VK_client" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="72" width="414" height="60"/>
+                                <rect key="frame" x="0.0" y="28" width="414" height="60"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="6lV-eC-8UW" id="Zh8-ae-dcP">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="60"/>
@@ -109,10 +104,7 @@
                             <outlet property="delegate" destination="qVx-qN-FY6" id="zrh-zS-dgl"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="My Friends" id="nKq-Yu-Zu4"/>
-                    <connections>
-                        <outlet property="friendsSearchBar" destination="m7u-Vl-cyH" id="n9L-FT-4sn"/>
-                    </connections>
+                    <navigationItem key="navigationItem" title="Мои Друзья" id="nKq-Yu-Zu4"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="YdM-fc-Fvg" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -140,7 +132,7 @@
                                     <rect key="frame" x="0.0" y="0.0" width="150" height="150"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView clipsSubviews="YES" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="icon" translatesAutoresizingMaskIntoConstraints="NO" id="8KJ-dj-Xdy">
+                                        <imageView clipsSubviews="YES" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8KJ-dj-Xdy">
                                             <rect key="frame" x="8" y="8" width="134" height="134"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         </imageView>
@@ -196,11 +188,11 @@
             </objects>
             <point key="canvasLocation" x="5989.8550724637689" y="-208.25892857142856"/>
         </scene>
-        <!--Groups-->
+        <!--Группы-->
         <scene sceneID="ua1-dZ-83l">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Ary-xh-dAp" customClass="CustomNavigationController" customModule="VK_client" customModuleProvider="target" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Groups" id="lGF-5F-NtH"/>
+                    <tabBarItem key="tabBarItem" title="Группы" id="lGF-5F-NtH"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="JKA-yy-L8a">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="56"/>
@@ -257,7 +249,7 @@
             </objects>
             <point key="canvasLocation" x="1070" y="118"/>
         </scene>
-        <!--News-->
+        <!--Новости-->
         <scene sceneID="1EF-nc-uf7">
             <objects>
                 <tableViewController id="re9-qo-CHB" customClass="NewsTableViewController" customModule="VK_client" customModuleProvider="target" sceneMemberID="viewController">
@@ -360,6 +352,7 @@
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="hny-vj-DZO" firstAttribute="top" secondItem="yPK-Lb-FNa" secondAttribute="top" constant="13" id="1VA-Cn-QPb"/>
+                                                <constraint firstItem="Jp0-FL-Vva" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="NEN-Cp-Uwk" secondAttribute="trailing" constant="8" symbolic="YES" id="9jT-ir-rv9"/>
                                                 <constraint firstAttribute="bottom" secondItem="hqR-65-zMI" secondAttribute="bottom" id="AKY-nc-rFV"/>
                                                 <constraint firstItem="hqR-65-zMI" firstAttribute="top" secondItem="yPK-Lb-FNa" secondAttribute="top" constant="10" id="AZk-8X-ne0"/>
                                                 <constraint firstItem="hny-vj-DZO" firstAttribute="leading" secondItem="wB6-4e-o5S" secondAttribute="trailing" constant="20" id="GH8-d2-47P"/>
@@ -416,7 +409,7 @@
                             <outlet property="delegate" destination="re9-qo-CHB" id="7Xl-hR-DMa"/>
                         </connections>
                     </tableView>
-                    <tabBarItem key="tabBarItem" title="News" id="fA0-r7-mAg"/>
+                    <tabBarItem key="tabBarItem" title="Новости" id="fA0-r7-mAg"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="E1V-XS-LJF" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -467,7 +460,7 @@
             </objects>
             <point key="canvasLocation" x="3179.7101449275365" y="2045.7589285714284"/>
         </scene>
-        <!--My Groups-->
+        <!--Мои Группы-->
         <scene sceneID="xnW-JQ-9kU">
             <objects>
                 <tableViewController id="Qsk-ck-nTc" customClass="MyGroupsController" customModule="VK_client" customModuleProvider="target" sceneMemberID="viewController">
@@ -475,14 +468,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                        <searchBar key="tableHeaderView" contentMode="redraw" id="qif-sH-rgJ">
-                            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                            <textInputTraits key="textInputTraits"/>
-                        </searchBar>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="GroupCell" id="Qjm-i9-Dhm" customClass="MyGroupsCell" customModule="VK_client" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="72" width="414" height="60"/>
+                                <rect key="frame" x="0.0" y="28" width="414" height="60"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Qjm-i9-Dhm" id="UOu-Ef-ZEf">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="60"/>
@@ -528,22 +516,19 @@
                             <outlet property="delegate" destination="Qsk-ck-nTc" id="CBx-MU-G3S"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="My Groups" id="BAj-bj-gf8">
-                        <barButtonItem key="rightBarButtonItem" title="Global groups" id="eJD-fr-LL5">
+                    <navigationItem key="navigationItem" title="Мои Группы" id="BAj-bj-gf8">
+                        <barButtonItem key="rightBarButtonItem" systemItem="search" id="eJD-fr-LL5">
                             <connections>
                                 <segue destination="7Sq-qd-zqk" kind="show" id="1Du-Fn-Q2Q"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
-                    <connections>
-                        <outlet property="myGroupsSearchBar" destination="qif-sH-rgJ" id="iq4-8w-ca1"/>
-                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZnK-WI-T9c" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="4089.8550724637685" y="458.70535714285711"/>
         </scene>
-        <!--Global Groups-->
+        <!--Группы-->
         <scene sceneID="P6f-Uo-iD6">
             <objects>
                 <tableViewController id="7Sq-qd-zqk" customClass="GlobalGroupsController" customModule="VK_client" customModuleProvider="target" sceneMemberID="viewController">
@@ -551,14 +536,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                        <searchBar key="tableHeaderView" contentMode="redraw" id="Ijy-IR-Zp9">
-                            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                            <textInputTraits key="textInputTraits"/>
-                        </searchBar>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="GlobalCell" id="STz-KF-7Wk" customClass="GlobalsGroupsCell" customModule="VK_client" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="72" width="414" height="60"/>
+                                <rect key="frame" x="0.0" y="28" width="414" height="60"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="STz-KF-7Wk" id="c1O-pt-8h3">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="60"/>
@@ -605,10 +585,7 @@
                             <outlet property="delegate" destination="7Sq-qd-zqk" id="Y8C-AN-IN5"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Global Groups" id="5JD-Nh-ewq"/>
-                    <connections>
-                        <outlet property="globalGroupsSearchBar" destination="Ijy-IR-Zp9" id="fjQ-AA-zC2"/>
-                    </connections>
+                    <navigationItem key="navigationItem" title="Группы" id="5JD-Nh-ewq"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="paF-gD-DZC" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <exit id="BuB-2y-hre" userLabel="Exit" sceneMemberID="exit"/>
@@ -619,7 +596,6 @@
     <resources>
         <image name="comment" width="128" height="128"/>
         <image name="forward" width="128" height="128"/>
-        <image name="icon" width="200" height="200"/>
         <image name="not-tapped-heart" width="96" height="96"/>
         <image name="seen" width="128" height="128"/>
     </resources>

@@ -34,8 +34,8 @@ class AuthorizationViewController: UIViewController {
         webView.navigationDelegate = self
         webView.load(request)
         
-        webView.cleanAllCookies()
-        webView.refreshCookies()
+//        webView.cleanAllCookies()
+//        webView.refreshCookies()
     }
 }
 
