@@ -14,6 +14,8 @@ class UserPhotosController: UICollectionViewController {
     var userID: Int?
     var photos: [Photo] = []
     
+    var cachedPhotos = [String: UIImage]()
+    
     let vkClientServer = VKClientServer()
     
     override func viewDidLoad() {
@@ -39,12 +41,30 @@ class UserPhotosController: UICollectionViewController {
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return photos.count
     }
+    
+    private func downloadPhoto(for url: String, indexPath: IndexPath) {
+        DispatchQueue.global().async {
+            if let photo = self.vkClientServer.getPhotoByURL(url: url) {
+                self.cachedPhotos[url] = photo
+                
+                DispatchQueue.main.async {
+                    self.collectionView.reloadItems(at: [indexPath])
+                }
+            }
+        }
+    }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "userPhotoCell", for: indexPath) as! UserPhotosCell
         
-        cell.userPhoto.image = vkClientServer.getPhotoByURL(url: photos[indexPath.row].url)
+        let url = photos[indexPath.row].url
         
+        if let cached = cachedPhotos[url] {
+            cell.userPhoto.image = cached
+        } else {
+            downloadPhoto(for: url, indexPath: indexPath)
+        }
+                
         return cell
     }
     

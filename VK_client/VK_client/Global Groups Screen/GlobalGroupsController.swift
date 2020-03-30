@@ -10,18 +10,20 @@ import UIKit
 
 class GlobalGroupsController: UITableViewController {
     
-    @IBOutlet weak var globalGroupsSearchBar: UISearchBar!
-    
-    
+    private let searchController: UISearchController = .init()
+        
     var groups: [Group] = []
-    
-    var isSearching = false
     var searchedGroups = [Group]()
+    var groupArray: [Group] {
+        return Array( searchController.isActive ? searchedGroups : groups )
+    }
 
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        globalGroupsSearchBar.delegate = self
+        
+        searchController.searchResultsUpdater = self
+        tableView.tableHeaderView = searchController.searchBar
     }
 
     // MARK: - Table view data source
@@ -31,24 +33,15 @@ class GlobalGroupsController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if isSearching {
-            return searchedGroups.count
-        } else {
-            return groups.count
-        }
+        groupArray.count
     }
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "GlobalCell", for: indexPath) as! GlobalsGroupsCell
         
-        if isSearching {
-            cell.globalGroupName.text = searchedGroups[indexPath.row].name
-            cell.globalGroupImageView.image = UIImage(named: "rian")
-        } else {
-            cell.globalGroupName.text = groups[indexPath.row].name
-            cell.globalGroupImageView.image = UIImage(named: "rian")
-        }
+        cell.globalGroupName.text = groupArray[indexPath.row].name
+        cell.globalGroupImageView.image = UIImage(named: "rian")
         
         cell.parentContainerView.shadow()
         cell.childContainerView.circle()
@@ -59,16 +52,10 @@ class GlobalGroupsController: UITableViewController {
 
 // MARK: - SearchBar
 
-extension GlobalGroupsController: UISearchBarDelegate {
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        if globalGroupsSearchBar.text == nil || globalGroupsSearchBar.text == "" {
-            isSearching = false
-            view.endEditing(true)
-            tableView.reloadData()
-        } else {
-            isSearching = true
-            searchedGroups = groups.filter( {$0.name.range(of: globalGroupsSearchBar.text!, options: .caseInsensitive) != nil} )
-            tableView.reloadData()
-        }
+extension GlobalGroupsController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        guard let text = searchController.searchBar.text else { return }
+        searchedGroups = groups.filter( {$0.name.range(of: text, options:  .caseInsensitive) != nil} )
+        tableView.reloadData()
     }
 }
