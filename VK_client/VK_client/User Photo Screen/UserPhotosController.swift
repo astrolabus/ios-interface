@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import RealmSwift
 
 class UserPhotosController: UICollectionViewController {
     
@@ -25,9 +26,20 @@ class UserPhotosController: UICollectionViewController {
 
         
         guard let id = userID else { return }
-        vkClientServer.loadUserPhotos(userID: id) { photos in
-            self.photos = photos
-            self.collectionView.reloadData()
+        vkClientServer.loadUserPhotos(userID: id) { [weak self] in
+            self?.loadData()
+            self?.collectionView.reloadData()
+        }
+    }
+    
+    func loadData() {
+        do {
+            let realm = try Realm()
+            let photos = realm.objects(Photo.self).filter("owner_id = %@", userID!)
+            self.photos = Array(photos)
+        }
+        catch {
+            print(error.localizedDescription)
         }
     }
 

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import RealmSwift
 
 class MyGroupsController: UITableViewController {
     
@@ -28,9 +29,20 @@ class MyGroupsController: UITableViewController {
         searchController.searchResultsUpdater = self
         tableView.tableHeaderView = searchController.searchBar
         
-        vkClientServer.loadUserGroups() { groups in
-            self.myGroups = groups
-            self.tableView.reloadData()
+        vkClientServer.loadUserGroups() { [weak self] in
+            self?.loadData()
+            self?.tableView.reloadData()
+        }
+    }
+    
+    func loadData() {
+        do {
+            let realm = try Realm()
+            let groups = realm.objects(Group.self)
+            self.myGroups = Array(groups)
+        }
+        catch {
+            print(error.localizedDescription)
         }
     }
 

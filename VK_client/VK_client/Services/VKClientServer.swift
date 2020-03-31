@@ -16,7 +16,7 @@ class VKClientServer {
     let baseURL = "https://api.vk.com/method"
     let apiKey = Session.shared.token
     
-    func loadFriendsList(_ completion: @escaping ([User]) -> Void ) {
+    func loadFriendsList(_ completion: @escaping () -> Void ) {
         
         let path = "/friends.get"
         
@@ -40,12 +40,12 @@ class VKClientServer {
                 
                 self.saveUserData(users)
 
-                completion(users)
+                completion()
             }
         }
     }
     
-    func loadUserPhotos(userID: Int, _ completion: @escaping ([Photo]) -> Void) {
+    func loadUserPhotos(userID: Int, _ completion: @escaping () -> Void) {
         
         let path = "/photos.getAll"
         
@@ -66,15 +66,15 @@ class VKClientServer {
 
                 let photos: [Photo] = self.parsePhotos(data: data)
                 
-                self.savePhotoData(photos)
+                self.savePhotoData(photos, for: userID)
 
-                completion(photos)
+                completion()
             }
         }
         
     }
     
-    func loadUserGroups(_ completion: @escaping ([Group]) -> Void) {
+    func loadUserGroups(_ completion: @escaping () -> Void) {
         
         let path = "/groups.get"
         
@@ -97,7 +97,7 @@ class VKClientServer {
                 
                 self.saveGroupData(groups)
 
-                completion(groups)
+                completion()
             }
         }
         
@@ -215,7 +215,9 @@ extension VKClientServer {
     func saveUserData(_ users: [User]) {
         do {
             let realm = try Realm()
+            let oldUsers = realm.objects(User.self)
             realm.beginWrite()
+            realm.delete(oldUsers)
             realm.add(users)
             try realm.commitWrite()
         }
@@ -224,10 +226,15 @@ extension VKClientServer {
         }
     }
     
-    func savePhotoData(_ photos: [Photo]) {
+    func savePhotoData(_ photos: [Photo], for user: Int) {
         do {
             let realm = try Realm()
+            let oldPhotos = realm.objects(Photo.self)
             realm.beginWrite()
+            realm.delete(oldPhotos)
+            
+            photos.forEach{ $0.owner_id = user }
+            
             realm.add(photos)
             try realm.commitWrite()
         }
@@ -239,7 +246,9 @@ extension VKClientServer {
     func saveGroupData(_ groups: [Group]) {
         do {
             let realm = try Realm()
+            let oldGroups = realm.objects(Group.self)
             realm.beginWrite()
+            realm.delete(oldGroups)
             realm.add(groups)
             try realm.commitWrite()
         }
