@@ -32,7 +32,7 @@
         <scene sceneID="Yqb-0G-fAB">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="sQh-WW-kTE" customClass="CustomNavigationController" customModule="VK_client" customModuleProvider="target" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Друзья" id="jh8-sf-cab"/>
+                    <tabBarItem key="tabBarItem" title="Друзья" image="person.2" catalog="system" id="jh8-sf-cab"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="lYL-jf-3vb">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="56"/>
@@ -192,7 +192,7 @@
         <scene sceneID="ua1-dZ-83l">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Ary-xh-dAp" customClass="CustomNavigationController" customModule="VK_client" customModuleProvider="target" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Группы" id="lGF-5F-NtH"/>
+                    <tabBarItem key="tabBarItem" title="Группы" image="person.3" catalog="system" id="lGF-5F-NtH"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="JKA-yy-L8a">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="56"/>
@@ -409,7 +409,7 @@
                             <outlet property="delegate" destination="re9-qo-CHB" id="7Xl-hR-DMa"/>
                         </connections>
                     </tableView>
-                    <tabBarItem key="tabBarItem" title="Новости" id="fA0-r7-mAg"/>
+                    <tabBarItem key="tabBarItem" title="Новости" image="rectangle.dock" catalog="system" id="fA0-r7-mAg"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="E1V-XS-LJF" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -597,6 +597,9 @@
         <image name="comment" width="128" height="128"/>
         <image name="forward" width="128" height="128"/>
         <image name="not-tapped-heart" width="96" height="96"/>
+        <image name="person.2" catalog="system" width="64" height="40"/>
+        <image name="person.3" catalog="system" width="72" height="35"/>
+        <image name="rectangle.dock" catalog="system" width="64" height="46"/>
         <image name="seen" width="128" height="128"/>
     </resources>
 </document>
