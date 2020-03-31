@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import RealmSwift
 
 class MyFriendsController: UITableViewController {
     
@@ -28,9 +29,20 @@ class MyFriendsController: UITableViewController {
         searchController.searchResultsUpdater = self
         tableView.tableHeaderView = searchController.searchBar
         
-        vkClientServer.loadFriendsList() { users in
-            self.users = users
-            self.tableView.reloadData()
+        vkClientServer.loadFriendsList() { [weak self] in
+            self?.loadData()
+            self?.tableView.reloadData()
+        }
+    }
+    
+    func loadData() {
+        do {
+            let realm = try Realm()
+            let users = realm.objects(User.self)
+            self.users = Array(users)
+        }
+        catch {
+            print(error.localizedDescription)
         }
     }
 
