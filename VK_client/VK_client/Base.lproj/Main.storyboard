@@ -576,7 +576,6 @@
                                     <outlet property="globalGroupImageView" destination="yPg-PO-Pid" id="5pH-Y2-m8I"/>
                                     <outlet property="globalGroupName" destination="wr9-rt-vz3" id="LCE-eA-hEi"/>
                                     <outlet property="parentContainerView" destination="Y6A-g0-4L2" id="hhp-WJ-s2s"/>
-                                    <segue destination="BuB-2y-hre" kind="unwind" identifier="addGroup" unwindAction="addGroupWithSegue:" id="moQ-Bg-SCt"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -588,7 +587,6 @@
                     <navigationItem key="navigationItem" title="Группы" id="5JD-Nh-ewq"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="paF-gD-DZC" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-                <exit id="BuB-2y-hre" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="4992.753623188406" y="458.70535714285711"/>
         </scene>

@@ -15,13 +15,15 @@ class MyGroupsController: UITableViewController {
     
     let vkClientServer = VKClientServer()
     
-    private var myGroups = [Group]()
-    private var mySearchedGroups = [Group]()
-    var groupArray: [Group] {
-        return Array(searchController.isActive ? mySearchedGroups : myGroups)
+    private var myGroups: Results<Group>?
+    private var mySearchedGroups: [Group] = []
+    var myGroupGeneralArray: [Group] {
+        return Array(searchController.isActive ? mySearchedGroups : myGroupsArray)
     }
     
     private var cachedPhotos = [String: UIImage]()
+    
+    private var token: NotificationToken?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,17 +31,30 @@ class MyGroupsController: UITableViewController {
         searchController.searchResultsUpdater = self
         tableView.tableHeaderView = searchController.searchBar
         
-        vkClientServer.loadUserGroups() { [weak self] in
-            self?.loadData()
-            self?.tableView.reloadData()
-        }
+        vkClientServer.loadUserGroups()
+        pairTableAndRealm()
     }
     
-    func loadData() {
+    func pairTableAndRealm() {
         do {
             let realm = try Realm()
-            let groups = realm.objects(Group.self)
-            self.myGroups = Array(groups)
+            myGroups = realm.objects(Group.self)
+            token = myGroups?.observe{ (changes) in
+                switch changes {
+                case .initial:
+                    self.tableView.reloadData()
+                case .update(_, let deletions, let insertions, let modifications):
+                    self.tableView.beginUpdates()
+                    
+                    self.tableView.deleteRows(at: deletions.map( {IndexPath(row: $0, section: 0)} ), with: .none)
+                    self.tableView.insertRows(at: insertions.map( {IndexPath(row: $0, section: 0)} ), with: .none)
+                    self.tableView.reloadRows(at: modifications.map({ IndexPath(row: $0, section: 0) }), with: .none)
+                    
+                    self.tableView.endUpdates()
+                case .error(let error):
+                    print(error.localizedDescription)
+                }
+            }
         }
         catch {
             print(error.localizedDescription)
@@ -53,11 +68,13 @@ class MyGroupsController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return groupArray.count
+        return myGroupGeneralArray.count
     }
     
+    private let queue = DispatchQueue(label: "my_groups_download_photo_queue")
+    
     private func downloadPhoto(for url: String, indexPath: IndexPath) {
-        DispatchQueue.global().async {
+        queue.async {
             if let photo = self.vkClientServer.getPhotoByURL(url: url) {
                 self.cachedPhotos[url] = photo
                 
@@ -71,9 +88,9 @@ class MyGroupsController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "GroupCell", for: indexPath) as! MyGroupsCell
         
-        cell.groupName.text = groupArray[indexPath.row].name
+        cell.groupName.text = myGroupGeneralArray[indexPath.row].name
         
-        let url = groupArray[indexPath.row].photo_100
+        let url = myGroupGeneralArray[indexPath.row].photo_100
         
         if let cached = cachedPhotos[url] {
             cell.myGroupImageView.image = cached
@@ -87,26 +104,18 @@ class MyGroupsController: UITableViewController {
         return cell
     }
     
-    //MARK: - Adding new groups
-    
-    @IBAction func addGroup(segue: UIStoryboardSegue) {
-        if segue.identifier == "addGroup" {
-            guard let globalGroupsController = segue.source as? GlobalGroupsController else { return }
-            
-            if let indexPath = globalGroupsController.tableView.indexPathForSelectedRow {
-                let group = globalGroupsController.groups[indexPath.row]
-                
-                myGroups.append(group)
-                tableView.reloadData()
-            }
-            
-        }
-    }
-    
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        guard let group = myGroups?[indexPath.row] else {return}
         if editingStyle == .delete {
-            myGroups.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .fade)
+            do {
+                let realm = try Realm()
+                realm.beginWrite()
+                realm.delete(group)
+                try realm.commitWrite()
+            }
+            catch {
+                print(error.localizedDescription)
+            }
         }
     }
 }
@@ -116,7 +125,14 @@ class MyGroupsController: UITableViewController {
 extension MyGroupsController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         guard let text = searchController.searchBar.text else { return }
-        mySearchedGroups = myGroups.filter( {$0.name.range(of: text, options: .caseInsensitive) != nil} )
+        mySearchedGroups = myGroupsArray.filter( {$0.name.range(of: text, options: .caseInsensitive) != nil} )
         tableView.reloadData()
+    }
+}
+
+extension MyGroupsController {
+    var myGroupsArray: [Group] {
+        guard let groups = myGroups else { return [] }
+        return Array(groups)
     }
 }

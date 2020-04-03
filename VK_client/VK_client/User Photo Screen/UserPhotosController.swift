@@ -13,11 +13,13 @@ class UserPhotosController: UICollectionViewController {
     
     var userNameTitle: String?
     var userID: Int?
-    var photos: [Photo] = []
+    var photos: Results<Photo>?
     
     var cachedPhotos = [String: UIImage]()
     
     let vkClientServer = VKClientServer()
+    
+    private var token: NotificationToken?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,22 +28,35 @@ class UserPhotosController: UICollectionViewController {
 
         
         guard let id = userID else { return }
-        vkClientServer.loadUserPhotos(userID: id) { [weak self] in
-            self?.loadData()
-            self?.collectionView.reloadData()
-        }
+        vkClientServer.loadUserPhotos(userID: id)
+        pairTableAndRealm()
     }
     
-    func loadData() {
+    func pairTableAndRealm() {
         do {
             let realm = try Realm()
-            let photos = realm.objects(Photo.self).filter("owner_id = %@", userID!)
-            self.photos = Array(photos)
+            photos = realm.objects(Photo.self)
+            token = photos?.observe{ (changes) in
+                switch changes {
+                case .initial:
+                    self.collectionView.reloadData()
+                case .update(_, let deletions, let insertions, let modifications):
+                    self.collectionView.performBatchUpdates({
+                        self.collectionView.insertItems(at: insertions.map({ IndexPath(row: $0, section: 0) }))
+                        self.collectionView.deleteItems(at: deletions.map({ IndexPath(row: $0, section: 0)}))
+                        self.collectionView.reloadItems(at: modifications.map({ IndexPath(row: $0, section: 0) }))
+                    }, completion: nil)
+
+                case .error(let error):
+                    print(error.localizedDescription)
+                }
+            }
         }
         catch {
             print(error.localizedDescription)
         }
     }
+    
 
     // MARK: - UICollectionViewDataSource
 
@@ -51,11 +66,13 @@ class UserPhotosController: UICollectionViewController {
 
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return photos.count
+        return photos?.count ?? 0
     }
     
+    private let queue = DispatchQueue(label: "user_photos_download_queue")
+    
     private func downloadPhoto(for url: String, indexPath: IndexPath) {
-        DispatchQueue.global().async {
+        queue.async {
             if let photo = self.vkClientServer.getPhotoByURL(url: url) {
                 self.cachedPhotos[url] = photo
                 
@@ -69,7 +86,7 @@ class UserPhotosController: UICollectionViewController {
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "userPhotoCell", for: indexPath) as! UserPhotosCell
         
-        let url = photos[indexPath.row].url
+        let url = photos?[indexPath.row].url ?? ""
         
         if let cached = cachedPhotos[url] {
             cell.userPhoto.image = cached
