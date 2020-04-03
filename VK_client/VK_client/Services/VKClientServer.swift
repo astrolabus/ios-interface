@@ -16,7 +16,7 @@ class VKClientServer {
     let baseURL = "https://api.vk.com/method"
     let apiKey = Session.shared.token
     
-    func loadFriendsList(_ completion: @escaping () -> Void ) {
+    func loadFriendsList() {
         
         let path = "/friends.get"
         
@@ -39,13 +39,11 @@ class VKClientServer {
                 let users: [User] = self.parseUsers(data: data)
                 
                 self.saveUserData(users)
-
-                completion()
             }
         }
     }
     
-    func loadUserPhotos(userID: Int, _ completion: @escaping () -> Void) {
+    func loadUserPhotos(userID: Int) {
         
         let path = "/photos.getAll"
         
@@ -67,14 +65,12 @@ class VKClientServer {
                 let photos: [Photo] = self.parsePhotos(data: data)
                 
                 self.savePhotoData(photos, for: userID)
-
-                completion()
             }
         }
         
     }
     
-    func loadUserGroups(_ completion: @escaping () -> Void) {
+    func loadUserGroups() {
         
         let path = "/groups.get"
         
@@ -96,8 +92,6 @@ class VKClientServer {
                 let groups: [Group] = self.parseGroups(data: data)
                 
                 self.saveGroupData(groups)
-
-                completion()
             }
         }
         

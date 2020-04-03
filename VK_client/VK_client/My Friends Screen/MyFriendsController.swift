@@ -15,13 +15,15 @@ class MyFriendsController: UITableViewController {
     
     let vkClientServer = VKClientServer()
     
-    private var users: [User] = []
-    private var searchedUsers : [User] = []
-    var userArray: [User] {
-        return Array( searchController.isActive ? searchedUsers : users )
+    private var users: Results<User>?
+    private var searchedUsers: [User] = []
+    var generalUsersArray: [User] {
+        return Array( searchController.isActive ? searchedUsers : usersArray )
     }
     
     private var cachedPhotos = [String: UIImage]()
+    
+    private var token: NotificationToken?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,17 +31,30 @@ class MyFriendsController: UITableViewController {
         searchController.searchResultsUpdater = self
         tableView.tableHeaderView = searchController.searchBar
         
-        vkClientServer.loadFriendsList() { [weak self] in
-            self?.loadData()
-            self?.tableView.reloadData()
-        }
+        vkClientServer.loadFriendsList()
+        pairTableAndRealm()
     }
     
-    func loadData() {
+    func pairTableAndRealm() {
         do {
             let realm = try Realm()
-            let users = realm.objects(User.self)
-            self.users = Array(users)
+            users = realm.objects(User.self)
+            token = users?.observe{ (changes) in
+                switch changes {
+                case .initial:
+                    self.tableView.reloadData()
+                case .update(_, let deletions, let insertions, let modifications):
+                    self.tableView.beginUpdates()
+                    
+                    self.tableView.deleteRows(at: deletions.map( {IndexPath(row: $0, section: 0)} ), with: .none)
+                    self.tableView.insertRows(at: insertions.map( {IndexPath(row: $0, section: 0)} ), with: .none)
+                    self.tableView.reloadRows(at: modifications.map({ IndexPath(row: $0, section: 0) }), with: .none)
+                    
+                    self.tableView.endUpdates()
+                case .error(let error):
+                    print(error.localizedDescription)
+                }
+            }
         }
         catch {
             print(error.localizedDescription)
@@ -53,11 +68,13 @@ class MyFriendsController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return userArray.count
+        return generalUsersArray.count
     }
     
+    private let queue = DispatchQueue(label: "friend_download_photo_queue")
+    
     private func downloadPhoto(for url: String, indexPath: IndexPath) {
-        DispatchQueue.global().async {
+        queue.async {
             if let photo = self.vkClientServer.getPhotoByURL(url: url) {
                 self.cachedPhotos[url] = photo
                 
@@ -71,8 +88,8 @@ class MyFriendsController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! MyFriendsCell
         
-        cell.friendName.text = userArray[indexPath.row].first_name + " " + userArray[indexPath.row].last_name
-        let url = userArray[indexPath.row].photo_100
+        cell.friendName.text = generalUsersArray[indexPath.row].first_name + " " + generalUsersArray[indexPath.row].last_name
+        let url = generalUsersArray[indexPath.row].photo_100
         
         if let cached = cachedPhotos[url] {
             cell.friendIconImageView.image = cached
@@ -95,10 +112,10 @@ class MyFriendsController: UITableViewController {
 
                 let destinationViewController = segue.destination as? UserPhotosController
 
-                userID = userArray[indexPath.row].id
+                userID = generalUsersArray[indexPath.row].id
                 destinationViewController?.userID = userID
                 
-                userName = userArray[indexPath.row].first_name + " " + userArray[indexPath.row].last_name
+                userName = generalUsersArray[indexPath.row].first_name + " " + generalUsersArray[indexPath.row].last_name
                 destinationViewController?.userNameTitle = userName
 
             }
@@ -128,7 +145,14 @@ class MyFriendsController: UITableViewController {
 extension MyFriendsController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         guard let text = searchController.searchBar.text else { return }
-        searchedUsers = users.filter( {($0.first_name + $0.last_name).range(of: text, options: .caseInsensitive) != nil} )
+        searchedUsers = usersArray.filter( {($0.first_name + $0.last_name).range(of: text, options: .caseInsensitive) != nil} )
         tableView.reloadData()
+    }
+}
+
+extension MyFriendsController {
+    var usersArray: [User] {
+        guard let users = users else { return [] }
+        return Array(users)
     }
 }
