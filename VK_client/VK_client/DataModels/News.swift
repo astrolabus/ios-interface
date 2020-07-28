@@ -8,11 +8,18 @@
 
 import UIKit
 
+enum PostType {
+    case photo
+    case post
+}
+
 struct NewsPost {
     var userIcon: UIImage?
     var userName: String
     var postDate: String
     
-    var postText: String
+    var postContent: String
     var postImage: UIImage?
+    
+    var postType: PostType
 }

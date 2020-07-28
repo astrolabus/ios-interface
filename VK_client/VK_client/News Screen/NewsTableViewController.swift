@@ -10,11 +10,11 @@ import UIKit
 
 class NewsTableViewController: UITableViewController {
     
-    var news = [
-        NewsPost(userIcon: UIImage(named: "anakin"), userName: "Anakin Skywalker", postDate: "13.02.2020", postText: "Some text", postImage: UIImage(named: "rian")),
-        NewsPost(userIcon: UIImage(named: "ashoka"), userName: "Ashoka Tano", postDate: "14.02.2020", postText: "Another text", postImage: UIImage(named: "oscars")),
-        NewsPost(userIcon: UIImage(named: "padme"), userName: "Padme Amidala", postDate: "15.02.2020", postText: "Something about senate", postImage: UIImage(named: "mando")),
-        NewsPost(userIcon: UIImage(named: "rex"), userName: "Rex", postDate: "17.02.2020", postText: "Ugh", postImage: UIImage(named: "mando"))
+    var newsData = [
+        NewsPost(userIcon: UIImage(named: "leia"), userName: "Leia Organa", postDate: "17.03.20", postContent: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam vitae faucibus nulla, non sodales libero. Cras tincidunt pharetra leo, at laoreet lacus rutrum at. Curabitur ultricies augue et nunc eleifend, vitae pharetra erat pretium. Quisque interdum ultrices leo eget placerat. Suspendisse vel mauris sed nisl commodo faucibus.", postImage: nil, postType: .post),
+        NewsPost(userIcon: UIImage(named: "han"), userName: "Han Solo", postDate: "18.03.20", postContent: "", postImage: UIImage(named: "padme"), postType: .photo),
+        NewsPost(userIcon: UIImage(named: "ashoka"), userName: "Ashoka Tano", postDate: "16.03.20", postContent: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam vitae faucibus nulla, non sodales libero. Cras tincidunt pharetra leo, at laoreet lacus rutrum at. Curabitur ultricies augue et nunc eleifend, vitae pharetra erat pretium. Quisque interdum ultrices leo eget placerat. Suspendisse vel mauris sed nisl commodo faucibus. Mauris vel ipsum nec neque rutrum laoreet. Nunc a risus sit amet elit volutpat fermentum. Aliquam urna est, gravida at ligula ac, congue porttitor nulla. Quisque blandit pharetra accumsan. Etiam in massa dui.", postImage: nil, postType: .post),
+        NewsPost(userIcon: UIImage(named: "din"), userName: "Mando", postDate: "16.03.20", postContent: "", postImage: UIImage(named: "ezra"), postType: .photo)
     ]
 
     override func viewDidLoad() {
@@ -28,24 +28,39 @@ class NewsTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return news.count
+        return newsData.count
     }
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "newsCell", for: indexPath) as! NewsTableViewCell
-
-        cell.userIconImageView.image = news[indexPath.row].userIcon
-        cell.userNameLabel.text = news[indexPath.row].userName
-        cell.postDateLabel.text = news[indexPath.row].postDate
         
-        cell.postTextLabel.text = news[indexPath.row].postText
-        cell.postImageView.image = news[indexPath.row].postImage
+        if newsData[indexPath.row].postType == .post {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "newsPostCell", for: indexPath) as! NewsPostTableViewCell
+            
+            cell.userIcon.image = newsData[indexPath.row].userIcon
+            cell.userName.text = newsData[indexPath.row].userName
+            cell.postDate.text = newsData[indexPath.row].postDate
+            
+            cell.postContent.text = newsData[indexPath.row].postContent
+            
+            cell.scrollView.contentLayoutGuide.bottomAnchor.constraint(equalTo: cell.postContent.bottomAnchor).isActive = true
+            cell.shapeContainer.circle()
+            
+            return cell
+        } else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "newsPhotoCell", for: indexPath) as! NewsPhotoTableViewCell
+            
+            cell.userIcon.image = newsData[indexPath.row].userIcon
+            cell.userName.text = newsData[indexPath.row].userName
+            cell.postDate.text = newsData[indexPath.row].postDate
+            
+            cell.postImage.image = newsData[indexPath.row].postImage
+            
+            cell.shapeContainer.circle()
+            
+            return cell
+        }
         
-        cell.postImageView.layer.cornerRadius = 20
-        cell.userIconImageView.layer.cornerRadius = cell.userIconImageView.frame.height / 2
-
-        return cell
     }
 
     /*

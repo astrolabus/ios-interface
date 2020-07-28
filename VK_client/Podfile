@@ -6,5 +6,7 @@ target 'VK_client' do
   pod 'Alamofire'
   pod 'SwiftyJSON'
   pod 'RealmSwift'
+  pod 'Firebase/Analytics'
+  pod 'Firebase/Database'
 
 end

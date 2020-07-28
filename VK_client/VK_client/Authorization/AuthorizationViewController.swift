@@ -8,10 +8,13 @@
 
 import UIKit
 import WebKit
+import FirebaseDatabase
 
 class AuthorizationViewController: UIViewController {
 
     @IBOutlet weak var webView: WKWebView!
+    
+    var requestHandler: UInt = 0
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -59,9 +62,13 @@ extension AuthorizationViewController: WKNavigationDelegate {
         }
         
         let token = params["access_token"]
+        let user_id = params["user_id"]
         
         Session.shared.token = token!
-        print("TOKEN = \(token)")
+        Session.shared.userID = user_id!
+        
+        print("TOKEN = \(String(describing: token))")
+        print("USER ID = \(String(describing: user_id) )")
         
         decisionHandler(.cancel)
     }
@@ -85,3 +92,4 @@ extension WKWebView {
         self.configuration.processPool = WKProcessPool()
     }
 }
+

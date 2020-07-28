@@ -1,22 +1,23 @@
 //
-//  NewsTableViewCell.swift
+//  NewsPhotoTableViewCell.swift
 //  VK_client
 //
-//  Created by Полина Войтенко on 27.02.2020.
+//  Created by Полина Войтенко on 28.07.2020.
 //  Copyright © 2020 Полина Войтенко. All rights reserved.
 //
 
 import UIKit
 
-class NewsTableViewCell: UITableViewCell {
+class NewsPhotoTableViewCell: UITableViewCell {
     
-    @IBOutlet weak var userIconImageView: UIImageView!
-    @IBOutlet weak var userNameLabel: UILabel!
-    @IBOutlet weak var postDateLabel: UILabel!
+    @IBOutlet weak var userIcon: UIImageView!
+    @IBOutlet weak var userName: UILabel!
+    @IBOutlet weak var postDate: UILabel!
     
-    @IBOutlet weak var postTextLabel: UILabel!
-    @IBOutlet weak var postImageView: UIImageView!
+    @IBOutlet weak var shapeContainer: ShapeContainer!
     
+    @IBOutlet weak var postImage: UIImageView!
+
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
