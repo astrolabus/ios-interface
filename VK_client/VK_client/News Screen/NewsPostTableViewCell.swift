@@ -14,7 +14,9 @@ class NewsPostTableViewCell: UITableViewCell {
     @IBOutlet weak var userName: UILabel!
     @IBOutlet weak var postDate: UILabel!
     
-    @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet weak var postPhoto: UIImageView!
+    @IBOutlet weak var photoHeight: NSLayoutConstraint!
+    
     @IBOutlet weak var shapeContainer: ShapeContainer!
     
     @IBOutlet weak var postContent: UILabel!
