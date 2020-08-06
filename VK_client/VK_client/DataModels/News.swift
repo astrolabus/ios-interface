@@ -7,19 +7,15 @@
 //
 
 import UIKit
+import RealmSwift
 
-enum PostType {
-    case photo
-    case post
-}
-
-struct NewsPost {
-    var userIcon: UIImage?
-    var userName: String
-    var postDate: String
+class NewsPostType: Object {
+    @objc dynamic var name = ""
     
-    var postContent: String
-    var postImage: UIImage?
+    @objc dynamic var date = ""
+    @objc dynamic var photo_100 = ""
     
-    var postType: PostType
+    @objc dynamic var type = ""
+    @objc dynamic var text = ""
+    @objc dynamic var url = ""
 }

@@ -7,18 +7,49 @@
 //
 
 import UIKit
+import RealmSwift
 
 class NewsTableViewController: UITableViewController {
     
-    var newsData = [
-        NewsPost(userIcon: UIImage(named: "leia"), userName: "Leia Organa", postDate: "17.03.20", postContent: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam vitae faucibus nulla, non sodales libero. Cras tincidunt pharetra leo, at laoreet lacus rutrum at. Curabitur ultricies augue et nunc eleifend, vitae pharetra erat pretium. Quisque interdum ultrices leo eget placerat. Suspendisse vel mauris sed nisl commodo faucibus.", postImage: nil, postType: .post),
-        NewsPost(userIcon: UIImage(named: "han"), userName: "Han Solo", postDate: "18.03.20", postContent: "", postImage: UIImage(named: "padme"), postType: .photo),
-        NewsPost(userIcon: UIImage(named: "ashoka"), userName: "Ashoka Tano", postDate: "16.03.20", postContent: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam vitae faucibus nulla, non sodales libero. Cras tincidunt pharetra leo, at laoreet lacus rutrum at. Curabitur ultricies augue et nunc eleifend, vitae pharetra erat pretium. Quisque interdum ultrices leo eget placerat. Suspendisse vel mauris sed nisl commodo faucibus. Mauris vel ipsum nec neque rutrum laoreet. Nunc a risus sit amet elit volutpat fermentum. Aliquam urna est, gravida at ligula ac, congue porttitor nulla. Quisque blandit pharetra accumsan. Etiam in massa dui.", postImage: nil, postType: .post),
-        NewsPost(userIcon: UIImage(named: "din"), userName: "Mando", postDate: "16.03.20", postContent: "", postImage: UIImage(named: "ezra"), postType: .photo)
-    ]
+    let vkClientServer = VKClientServer()
+    
+    private var news: Results<NewsPostType>?
+    
+    private var token: NotificationToken?
+    
+    private var cachedPhotos = [String: UIImage]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        vkClientServer.loadNewsFeed()
+        pairTableAndRealm()
+    }
+    
+    func pairTableAndRealm() {
+        do {
+            let realm = try Realm()
+            news = realm.objects(NewsPostType.self)
+            token = news?.observe{ (changes) in
+                switch changes {
+                case .initial:
+                    self.tableView.reloadData()
+                case .update(_, let deletions, let insertions, let modifications):
+                    self.tableView.beginUpdates()
+                    
+                    self.tableView.deleteRows(at: deletions.map({IndexPath(row: $0, section: 0)}), with: .none)
+                    self.tableView.insertRows(at: insertions.map({IndexPath(row: $0, section: 0)}), with: .none)
+                    self.tableView.reloadRows(at: modifications.map({IndexPath(row: $0, section: 0)}), with: .none)
+                    
+                    self.tableView.endUpdates()
+                case .error(let error):
+                    print(error.localizedDescription)
+                }
+            }
+        }
+        catch {
+            print(error.localizedDescription)
+        }
     }
 
     // MARK: - Table view data source
@@ -28,84 +59,54 @@ class NewsTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return newsData.count
+        return news?.count ?? 0
     }
+    
+    private let queue = DispatchQueue(label: "news_download_photo_queue")
 
+    private func downloadPhoto(for url: String, indexPath: IndexPath) {
+        queue.async {
+            if let photo = self.vkClientServer.getPhotoByURL(url: url) {
+                self.cachedPhotos[url] = photo
+                
+                DispatchQueue.main.async {
+                    self.tableView.reloadRows(at: [indexPath], with: .automatic)
+                }
+            }
+        }
+    }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        if newsData[indexPath.row].postType == .post {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "newsPostCell", for: indexPath) as! NewsPostTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "newsPostCell", for: indexPath) as! NewsPostTableViewCell
             
-            cell.userIcon.image = newsData[indexPath.row].userIcon
-            cell.userName.text = newsData[indexPath.row].userName
-            cell.postDate.text = newsData[indexPath.row].postDate
-            
-            cell.postContent.text = newsData[indexPath.row].postContent
-            
-            cell.scrollView.contentLayoutGuide.bottomAnchor.constraint(equalTo: cell.postContent.bottomAnchor).isActive = true
-            cell.shapeContainer.circle()
-            
-            return cell
+        cell.userName.text = news?[indexPath.row].name
+        cell.postDate.text = news?[indexPath.row].date
+        cell.postContent.text = news?[indexPath.row].text
+        
+        let userPhotoURL = news?[indexPath.row].photo_100 ?? ""
+        
+        if let cached = cachedPhotos[userPhotoURL] {
+            cell.userIcon.image = cached
         } else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "newsPhotoCell", for: indexPath) as! NewsPhotoTableViewCell
-            
-            cell.userIcon.image = newsData[indexPath.row].userIcon
-            cell.userName.text = newsData[indexPath.row].userName
-            cell.postDate.text = newsData[indexPath.row].postDate
-            
-            cell.postImage.image = newsData[indexPath.row].postImage
-            
-            cell.shapeContainer.circle()
-            
-            return cell
+            downloadPhoto(for: userPhotoURL, indexPath: indexPath)
         }
         
+        let postPhotoURL = news?[indexPath.row].url ?? ""
+        
+        if let cachedPhoto = cachedPhotos[postPhotoURL] {
+            cell.postPhoto.image = cachedPhoto
+        } else {
+            downloadPhoto(for: postPhotoURL, indexPath: indexPath)
+        }
+        
+//        if postPhotoURL == "" {
+//            cell.photoHeight.constant = 0
+//        }
+        
+        cell.shapeContainer.circle()
+            
+        return cell
     }
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }
