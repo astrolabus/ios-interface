@@ -8,6 +8,7 @@
 
 import UIKit
 import RealmSwift
+import Alamofire
 
 class MyFriendsController: UITableViewController {
     
@@ -15,10 +16,14 @@ class MyFriendsController: UITableViewController {
     
     let vkClientServer = VKClientServer()
     
+    private let operationQueue = OperationQueue()
+    
     private var users: Results<User>?
+    var array: [User] = []
+    
     private var searchedUsers: [User] = []
     var generalUsersArray: [User] {
-        return Array( searchController.isActive ? searchedUsers : usersArray )
+        return Array( searchController.isActive ? searchedUsers : array )
     }
     
     private var cachedPhotos = [String: UIImage]()
@@ -31,8 +36,35 @@ class MyFriendsController: UITableViewController {
         searchController.searchResultsUpdater = self
         tableView.tableHeaderView = searchController.searchBar
         
-        vkClientServer.loadFriendsList()
-        pairTableAndRealm()
+        let url = "https://api.vk.com/method/friends.get"
+        let apiKey = Session.shared.token
+        
+        let parameters: Parameters = [
+            "order": "hints",
+            "fields": "photo_100",
+            "access_token": apiKey,
+            "v": "5.103"
+        ]
+        
+        let request = AF.request(url, method: .get, parameters: parameters)
+        
+        let fetchDataOperation = FetchDataOperation(request: request)
+        let parseDataOperation = ParseDataOperation()
+        let safeToRealmOperation = SafeToRealmOperation()
+        let displayDataOperation = DisplayDataOperation(controller: self)
+        
+        parseDataOperation.addDependency(fetchDataOperation)
+        safeToRealmOperation.addDependency(parseDataOperation)
+        displayDataOperation.addDependency(safeToRealmOperation)
+        
+        operationQueue.addOperation(fetchDataOperation)
+        operationQueue.addOperation(parseDataOperation)
+        
+        OperationQueue.main.addOperation(safeToRealmOperation)
+        OperationQueue.main.addOperation(displayDataOperation)
+        
+        //vkClientServer.loadFriendsList()
+        //pairTableAndRealm()
     }
     
     func pairTableAndRealm() {
