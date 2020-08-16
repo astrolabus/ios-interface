@@ -25,6 +25,7 @@
 		2E54BD8323F2D52C00056EC0 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E54BD8223F2D52C00056EC0 /* User.swift */; };
 		2E54BD8623F2D68D00056EC0 /* MyFriendsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E54BD8523F2D68D00056EC0 /* MyFriendsCell.swift */; };
 		2E54BD8823F2D6A300056EC0 /* MyFriendsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E54BD8723F2D6A300056EC0 /* MyFriendsController.swift */; };
+		2E69583B24E865F700E0A22A /* Promises.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E69583A24E865F700E0A22A /* Promises.swift */; };
 		2E71A92024D0045F00AEDF84 /* NewsPostTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E71A91F24D0045F00AEDF84 /* NewsPostTableViewCell.swift */; };
 		2E71A92224D0047000AEDF84 /* NewsPhotoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E71A92124D0047000AEDF84 /* NewsPhotoTableViewCell.swift */; };
 		2E71A92424E1D7DD00AEDF84 /* AsyncOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E71A92324E1D7DD00AEDF84 /* AsyncOperation.swift */; };
@@ -70,6 +71,7 @@
 		2E54BD8223F2D52C00056EC0 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		2E54BD8523F2D68D00056EC0 /* MyFriendsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyFriendsCell.swift; sourceTree = "<group>"; };
 		2E54BD8723F2D6A300056EC0 /* MyFriendsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyFriendsController.swift; sourceTree = "<group>"; };
+		2E69583A24E865F700E0A22A /* Promises.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Promises.swift; sourceTree = "<group>"; };
 		2E71A91F24D0045F00AEDF84 /* NewsPostTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsPostTableViewCell.swift; sourceTree = "<group>"; };
 		2E71A92124D0047000AEDF84 /* NewsPhotoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsPhotoTableViewCell.swift; sourceTree = "<group>"; };
 		2E71A92324E1D7DD00AEDF84 /* AsyncOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncOperation.swift; sourceTree = "<group>"; };
@@ -200,6 +202,26 @@
 			path = DataModels;
 			sourceTree = "<group>";
 		};
+		2E69583824E8658600E0A22A /* NSOperations */ = {
+			isa = PBXGroup;
+			children = (
+				2E71A92324E1D7DD00AEDF84 /* AsyncOperation.swift */,
+				2E71A92524E1D8E100AEDF84 /* FetchDataOperation.swift */,
+				2E71A92724E1D9DB00AEDF84 /* ParseDataOperation.swift */,
+				2E71A92924E1DA1100AEDF84 /* SafeToRealmOperation.swift */,
+				2E71A92B24E1DA2800AEDF84 /* DisplayDataOperation.swift */,
+			);
+			path = NSOperations;
+			sourceTree = "<group>";
+		};
+		2E69583924E865D400E0A22A /* Promises */ = {
+			isa = PBXGroup;
+			children = (
+				2E69583A24E865F700E0A22A /* Promises.swift */,
+			);
+			path = Promises;
+			sourceTree = "<group>";
+		};
 		2ED6224F23F6C1880031AB3A /* User Photo Screen */ = {
 			isa = PBXGroup;
 			children = (
@@ -252,11 +274,8 @@
 			isa = PBXGroup;
 			children = (
 				2ED829A0242115C600C0D7B3 /* VKClientServer.swift */,
-				2E71A92324E1D7DD00AEDF84 /* AsyncOperation.swift */,
-				2E71A92524E1D8E100AEDF84 /* FetchDataOperation.swift */,
-				2E71A92724E1D9DB00AEDF84 /* ParseDataOperation.swift */,
-				2E71A92924E1DA1100AEDF84 /* SafeToRealmOperation.swift */,
-				2E71A92B24E1DA2800AEDF84 /* DisplayDataOperation.swift */,
+				2E69583924E865D400E0A22A /* Promises */,
+				2E69583824E8658600E0A22A /* NSOperations */,
 			);
 			path = "Services & Operations";
 			sourceTree = "<group>";
@@ -405,6 +424,7 @@
 				2E54BD7D23F2D31F00056EC0 /* MyGroupsController.swift in Sources */,
 				2E37049723FBF7CF002B115C /* ShadowContainer.swift in Sources */,
 				2E54BD8323F2D52C00056EC0 /* User.swift in Sources */,
+				2E69583B24E865F700E0A22A /* Promises.swift in Sources */,
 				2E71A92424E1D7DD00AEDF84 /* AsyncOperation.swift in Sources */,
 				2E322E4123E2DDED005DF1F6 /* VK_client.xcdatamodeld in Sources */,
 				2E71A92024D0045F00AEDF84 /* NewsPostTableViewCell.swift in Sources */,
