@@ -13,16 +13,13 @@ import Alamofire
 class NewsTableViewController: UITableViewController {
     
     let vkClientServer = VKClientServer()
-    
-    private var news: Results<NewsPostType>?
+    var photoService: PhotoService?
     
     private let operationQueue = OperationQueue()
     
     var array: [NewsPostType] = []
     
     private var token: NotificationToken?
-    
-    private var cachedPhotos = [String: UIImage]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,7 +31,6 @@ class NewsTableViewController: UITableViewController {
             "access_token": apiKey,
             "v": "5.103",
             "filters": "post"
-            // "count": 5
         ]
         
         let request = AF.request(url, method: .get, parameters: parameters)
@@ -54,34 +50,7 @@ class NewsTableViewController: UITableViewController {
         OperationQueue.main.addOperation(safeToRealmOperation)
         OperationQueue.main.addOperation(displayDataOperation)
         
-        // vkClientServer.loadNewsFeed()
-        // pairTableAndRealm()
-    }
-    
-    func pairTableAndRealm() {
-        do {
-            let realm = try Realm()
-            news = realm.objects(NewsPostType.self)
-            token = news?.observe{ (changes) in
-                switch changes {
-                case .initial:
-                    self.tableView.reloadData()
-                case .update(_, let deletions, let insertions, let modifications):
-                    self.tableView.beginUpdates()
-                    
-                    self.tableView.deleteRows(at: deletions.map({IndexPath(row: $0, section: 0)}), with: .none)
-                    self.tableView.insertRows(at: insertions.map({IndexPath(row: $0, section: 0)}), with: .none)
-                    self.tableView.reloadRows(at: modifications.map({IndexPath(row: $0, section: 0)}), with: .none)
-                    
-                    self.tableView.endUpdates()
-                case .error(let error):
-                    print(error.localizedDescription)
-                }
-            }
-        }
-        catch {
-            print(error.localizedDescription)
-        }
+        photoService = PhotoService(container: tableView)
     }
 
     // MARK: - Table view data source
@@ -94,20 +63,6 @@ class NewsTableViewController: UITableViewController {
         return array.count
     }
     
-    private let queue = DispatchQueue(label: "news_download_photo_queue")
-
-    private func downloadPhoto(for url: String, indexPath: IndexPath) {
-        queue.async {
-            if let photo = self.vkClientServer.getPhotoByURL(url: url) {
-                self.cachedPhotos[url] = photo
-                
-                DispatchQueue.main.async {
-                    self.tableView.reloadRows(at: [indexPath], with: .automatic)
-                }
-            }
-        }
-    }
-    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "newsPostCell", for: indexPath) as! NewsPostTableViewCell
@@ -117,20 +72,10 @@ class NewsTableViewController: UITableViewController {
         cell.postContent.text = array[indexPath.row].text
         
         let userPhotoURL = array[indexPath.row].photo_100
-        
-        if let cached = cachedPhotos[userPhotoURL] {
-            cell.userIcon.image = cached
-        } else {
-            downloadPhoto(for: userPhotoURL, indexPath: indexPath)
-        }
+        cell.userIcon.image = photoService?.photo(atIndexpath: indexPath, byUrl: userPhotoURL)
         
         let postPhotoURL = array[indexPath.row].url
-        
-        if let cachedPhoto = cachedPhotos[postPhotoURL] {
-            cell.postPhoto.image = cachedPhoto
-        } else {
-            downloadPhoto(for: postPhotoURL, indexPath: indexPath)
-        }
+        cell.postPhoto.image = photoService?.photo(atIndexpath: indexPath, byUrl: postPhotoURL)
         
 //        if postPhotoURL == "" {
 //            cell.photoHeight.constant = 0

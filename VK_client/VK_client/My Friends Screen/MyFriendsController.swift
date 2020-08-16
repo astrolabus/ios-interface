@@ -15,20 +15,19 @@ class MyFriendsController: UITableViewController {
     private let searchController: UISearchController = .init()
     
     let vkClientServer = VKClientServer()
+    var photoService: PhotoService?
     
     private let operationQueue = OperationQueue()
     
     private var users: Results<User>?
     var array: [User] = []
     
+    private var token: NotificationToken?
+    
     private var searchedUsers: [User] = []
     var generalUsersArray: [User] {
         return Array( searchController.isActive ? searchedUsers : array )
     }
-    
-    private var cachedPhotos = [String: UIImage]()
-    
-    private var token: NotificationToken?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -63,36 +62,7 @@ class MyFriendsController: UITableViewController {
         OperationQueue.main.addOperation(safeToRealmOperation)
         OperationQueue.main.addOperation(displayDataOperation)
         
-        // vkClientServer.loadFriendsList()
-        // pairTableAndRealm()
-    }
-    
-    // func getFriends() {}
-    
-    func pairTableAndRealm() {
-        do {
-            let realm = try Realm()
-            users = realm.objects(User.self)
-            token = users?.observe{ (changes) in
-                switch changes {
-                case .initial:
-                    self.tableView.reloadData()
-                case .update(_, let deletions, let insertions, let modifications):
-                    self.tableView.beginUpdates()
-                    
-                    self.tableView.deleteRows(at: deletions.map( {IndexPath(row: $0, section: 0)} ), with: .none)
-                    self.tableView.insertRows(at: insertions.map( {IndexPath(row: $0, section: 0)} ), with: .none)
-                    self.tableView.reloadRows(at: modifications.map({ IndexPath(row: $0, section: 0) }), with: .none)
-                    
-                    self.tableView.endUpdates()
-                case .error(let error):
-                    print(error.localizedDescription)
-                }
-            }
-        }
-        catch {
-            print(error.localizedDescription)
-        }
+        photoService = PhotoService(container: tableView)
     }
 
     // MARK: - Table view data source
@@ -105,19 +75,19 @@ class MyFriendsController: UITableViewController {
         return generalUsersArray.count
     }
     
-    private let queue = DispatchQueue(label: "friend_download_photo_queue")
+//    private let queue = DispatchQueue(label: "friend_download_photo_queue")
     
-    private func downloadPhoto(for url: String, indexPath: IndexPath) {
-        queue.async {
-            if let photo = self.vkClientServer.getPhotoByURL(url: url) {
-                self.cachedPhotos[url] = photo
-                
-                DispatchQueue.main.async {
-                    self.tableView.reloadRows(at: [indexPath], with: .automatic)
-                }
-            }
-        }
-    }
+//    private func downloadPhoto(for url: String, indexPath: IndexPath) {
+//        queue.async {
+//            if let photo = self.vkClientServer.getPhotoByURL(url: url) {
+//                self.cachedPhotos[url] = photo
+//
+//                DispatchQueue.main.async {
+//                    self.tableView.reloadRows(at: [indexPath], with: .automatic)
+//                }
+//            }
+//        }
+//    }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! MyFriendsCell
@@ -125,11 +95,7 @@ class MyFriendsController: UITableViewController {
         cell.friendName.text = generalUsersArray[indexPath.row].first_name + " " + generalUsersArray[indexPath.row].last_name
         let url = generalUsersArray[indexPath.row].photo_100
         
-        if let cached = cachedPhotos[url] {
-            cell.friendIconImageView.image = cached
-        } else {
-            downloadPhoto(for: url, indexPath: indexPath)
-        }
+        cell.friendIconImageView.image = photoService?.photo(atIndexpath: indexPath, byUrl: url)
         
         cell.parentContainerView.shadow()
         cell.childContainerView.circle()

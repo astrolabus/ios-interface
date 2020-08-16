@@ -17,9 +17,10 @@ class MyGroupsController: UITableViewController {
     
     let vkClientServer = VKClientServer()
     let getDataPromises = GetDataPromises()
+    var photoService: PhotoService?
     
     private let operationQueue = OperationQueue()
-    
+    private var token: NotificationToken?
     private var myGroups: Results<Group>?
     
     var array: [Group] = []
@@ -27,16 +28,14 @@ class MyGroupsController: UITableViewController {
     var myGroupGeneralArray: [Group] {
         return Array(searchController.isActive ? mySearchedGroups : myGroupsArray)
     }
-    
-    private var cachedPhotos = [String: UIImage]()
-    
-    private var token: NotificationToken?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         searchController.searchResultsUpdater = self
         tableView.tableHeaderView = searchController.searchBar
+        
+        photoService = PhotoService(container: tableView)
         
         loadingGroupsData()
         pairTableAndRealm()
@@ -50,7 +49,7 @@ class MyGroupsController: UITableViewController {
         }.then { groups in
             self.getDataPromises.saveGroupDataToRealm(groups)
         }.catch { _ in
-            print("shit happend")
+            print("error")
         }
     }
     
@@ -90,20 +89,6 @@ class MyGroupsController: UITableViewController {
         return myGroupGeneralArray.count
     }
     
-    private let queue = DispatchQueue(label: "my_groups_download_photo_queue")
-    
-    private func downloadPhoto(for url: String, indexPath: IndexPath) {
-        queue.async {
-            if let photo = self.vkClientServer.getPhotoByURL(url: url) {
-                self.cachedPhotos[url] = photo
-                
-                DispatchQueue.main.async {
-                    self.tableView.reloadRows(at: [indexPath], with: .automatic)
-                }
-            }
-        }
-    }
-    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "GroupCell", for: indexPath) as! MyGroupsCell
         
@@ -111,11 +96,7 @@ class MyGroupsController: UITableViewController {
         
         let url = myGroupGeneralArray[indexPath.row].photo_100
         
-        if let cached = cachedPhotos[url] {
-            cell.myGroupImageView.image = cached
-        } else {
-            downloadPhoto(for: url, indexPath: indexPath)
-        }
+        cell.myGroupImageView.image = photoService?.photo(atIndexpath: indexPath, byUrl: url)
         
         cell.parentContainerView.shadow()
         cell.childContainerView.circle()
