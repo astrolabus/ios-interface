@@ -20,9 +20,8 @@ class UserPhotosController: UICollectionViewController {
     
     private let operationQueue = OperationQueue()
     
-    var cachedPhotos = [String: UIImage]()
-    
     let vkClientServer = VKClientServer()
+    var photoService: PhotoService?
     
     private var token: NotificationToken?
     
@@ -59,36 +58,9 @@ class UserPhotosController: UICollectionViewController {
         OperationQueue.main.addOperation(safeToRealmOperation)
         OperationQueue.main.addOperation(displayDataOperation)
         
-        // vkClientServer.loadUserPhotos(userID: id)
-        // pairTableAndRealm()
+        photoService = PhotoService(container: collectionView)
     }
     
-//    func pairTableAndRealm() {
-//        do {
-//            let realm = try Realm()
-//            photos = realm.objects(Photo.self)
-//            token = photos?.observe{ (changes) in
-//                switch changes {
-//                case .initial:
-//                    self.collectionView.reloadData()
-//                case .update(_, let deletions, let insertions, let modifications):
-//                    self.collectionView.performBatchUpdates({
-//                        self.collectionView.insertItems(at: insertions.map({ IndexPath(row: $0, section: 0) }))
-//                        self.collectionView.deleteItems(at: deletions.map({ IndexPath(row: $0, section: 0)}))
-//                        self.collectionView.reloadItems(at: modifications.map({ IndexPath(row: $0, section: 0) }))
-//                    }, completion: nil)
-//
-//                case .error(let error):
-//                    print(error.localizedDescription)
-//                }
-//            }
-//        }
-//        catch {
-//            print(error.localizedDescription)
-//        }
-//    }
-    
-
     // MARK: - UICollectionViewDataSource
 
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -99,31 +71,12 @@ class UserPhotosController: UICollectionViewController {
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return array.count
     }
-    
-    private let queue = DispatchQueue(label: "user_photos_download_queue")
-    
-    private func downloadPhoto(for url: String, indexPath: IndexPath) {
-        queue.async {
-            if let photo = self.vkClientServer.getPhotoByURL(url: url) {
-                self.cachedPhotos[url] = photo
-                
-                DispatchQueue.main.async {
-                    self.collectionView.reloadItems(at: [indexPath])
-                }
-            }
-        }
-    }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "userPhotoCell", for: indexPath) as! UserPhotosCell
         
         let url = array[indexPath.row].url
-        
-        if let cached = cachedPhotos[url] {
-            cell.userPhoto.image = cached
-        } else {
-            downloadPhoto(for: url, indexPath: indexPath)
-        }
+        cell.userPhoto.image = photoService?.photo(atIndexpath: indexPath, byUrl: url)
                 
         return cell
     }
