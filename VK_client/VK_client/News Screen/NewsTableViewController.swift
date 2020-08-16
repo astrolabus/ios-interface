@@ -8,12 +8,17 @@
 
 import UIKit
 import RealmSwift
+import Alamofire
 
 class NewsTableViewController: UITableViewController {
     
     let vkClientServer = VKClientServer()
     
     private var news: Results<NewsPostType>?
+    
+    private let operationQueue = OperationQueue()
+    
+    var array: [NewsPostType] = []
     
     private var token: NotificationToken?
     
@@ -22,8 +27,35 @@ class NewsTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        vkClientServer.loadNewsFeed()
-        pairTableAndRealm()
+        let url = "https://api.vk.com/method//newsfeed.get"
+        let apiKey = Session.shared.token
+        
+        let parameters: Parameters = [
+            "access_token": apiKey,
+            "v": "5.103",
+            "filters": "post"
+            // "count": 5
+        ]
+        
+        let request = AF.request(url, method: .get, parameters: parameters)
+        
+        let fetchDataOperation = FetchDataOperation(request: request)
+        let parseDataOperation = ParseNewsDataOperation()
+        let safeToRealmOperation = SafeNewsToRealmOperation()
+        let displayDataOperation = DisplayNewsDataOperation(controller: self)
+        
+        parseDataOperation.addDependency(fetchDataOperation)
+        safeToRealmOperation.addDependency(parseDataOperation)
+        displayDataOperation.addDependency(safeToRealmOperation)
+        
+        operationQueue.addOperation(fetchDataOperation)
+        operationQueue.addOperation(parseDataOperation)
+        
+        OperationQueue.main.addOperation(safeToRealmOperation)
+        OperationQueue.main.addOperation(displayDataOperation)
+        
+        // vkClientServer.loadNewsFeed()
+        // pairTableAndRealm()
     }
     
     func pairTableAndRealm() {
@@ -59,7 +91,7 @@ class NewsTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return news?.count ?? 0
+        return array.count
     }
     
     private let queue = DispatchQueue(label: "news_download_photo_queue")
@@ -80,11 +112,11 @@ class NewsTableViewController: UITableViewController {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "newsPostCell", for: indexPath) as! NewsPostTableViewCell
             
-        cell.userName.text = news?[indexPath.row].name
-        cell.postDate.text = news?[indexPath.row].date
-        cell.postContent.text = news?[indexPath.row].text
+        cell.userName.text = array[indexPath.row].name
+        cell.postDate.text = array[indexPath.row].date
+        cell.postContent.text = array[indexPath.row].text
         
-        let userPhotoURL = news?[indexPath.row].photo_100 ?? ""
+        let userPhotoURL = array[indexPath.row].photo_100
         
         if let cached = cachedPhotos[userPhotoURL] {
             cell.userIcon.image = cached
@@ -92,7 +124,7 @@ class NewsTableViewController: UITableViewController {
             downloadPhoto(for: userPhotoURL, indexPath: indexPath)
         }
         
-        let postPhotoURL = news?[indexPath.row].url ?? ""
+        let postPhotoURL = array[indexPath.row].url
         
         if let cachedPhoto = cachedPhotos[postPhotoURL] {
             cell.postPhoto.image = cachedPhoto

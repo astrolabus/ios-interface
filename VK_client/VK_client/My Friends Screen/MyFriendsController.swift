@@ -63,9 +63,11 @@ class MyFriendsController: UITableViewController {
         OperationQueue.main.addOperation(safeToRealmOperation)
         OperationQueue.main.addOperation(displayDataOperation)
         
-        //vkClientServer.loadFriendsList()
-        //pairTableAndRealm()
+        // vkClientServer.loadFriendsList()
+        // pairTableAndRealm()
     }
+    
+    // func getFriends() {}
     
     func pairTableAndRealm() {
         do {

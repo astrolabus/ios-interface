@@ -8,14 +8,21 @@
 
 import UIKit
 import RealmSwift
+import Alamofire
+import PromiseKit
 
 class MyGroupsController: UITableViewController {
     
     private let searchController: UISearchController = .init()
     
     let vkClientServer = VKClientServer()
+    let getDataPromises = GetDataPromises()
+    
+    private let operationQueue = OperationQueue()
     
     private var myGroups: Results<Group>?
+    
+    var array: [Group] = []
     private var mySearchedGroups: [Group] = []
     var myGroupGeneralArray: [Group] {
         return Array(searchController.isActive ? mySearchedGroups : myGroupsArray)
@@ -31,8 +38,20 @@ class MyGroupsController: UITableViewController {
         searchController.searchResultsUpdater = self
         tableView.tableHeaderView = searchController.searchBar
         
-        vkClientServer.loadUserGroups()
+        loadingGroupsData()
         pairTableAndRealm()
+    }
+    
+    func loadingGroupsData() {
+        firstly {
+            getDataPromises.fetchGroupsData()
+        }.then { data in
+            self.getDataPromises.parseGroupData(data: data)
+        }.then { groups in
+            self.getDataPromises.saveGroupDataToRealm(groups)
+        }.catch { _ in
+            print("shit happend")
+        }
     }
     
     func pairTableAndRealm() {
@@ -45,11 +64,11 @@ class MyGroupsController: UITableViewController {
                     self.tableView.reloadData()
                 case .update(_, let deletions, let insertions, let modifications):
                     self.tableView.beginUpdates()
-                    
+
                     self.tableView.deleteRows(at: deletions.map( {IndexPath(row: $0, section: 0)} ), with: .none)
                     self.tableView.insertRows(at: insertions.map( {IndexPath(row: $0, section: 0)} ), with: .none)
                     self.tableView.reloadRows(at: modifications.map({ IndexPath(row: $0, section: 0) }), with: .none)
-                    
+
                     self.tableView.endUpdates()
                 case .error(let error):
                     print(error.localizedDescription)
