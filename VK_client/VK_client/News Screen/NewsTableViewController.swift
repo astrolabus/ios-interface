@@ -71,11 +71,8 @@ class NewsTableViewController: UITableViewController {
         cell.postDate.text = array[indexPath.row].date
         cell.postContent.text = array[indexPath.row].text
         
-        let userPhotoURL = array[indexPath.row].photo_100
-        cell.userIcon.image = photoService?.photo(atIndexpath: indexPath, byUrl: userPhotoURL)
-        
-        let postPhotoURL = array[indexPath.row].url
-        cell.postPhoto.image = photoService?.photo(atIndexpath: indexPath, byUrl: postPhotoURL)
+        cell.userIcon.image = photoService?.photo(atIndexpath: indexPath, byUrl: array[indexPath.row].photo_100)
+        cell.postPhoto.image = photoService?.photo(atIndexpath: indexPath, byUrl: array[indexPath.row].url)
         
 //        if postPhotoURL == "" {
 //            cell.photoHeight.constant = 0

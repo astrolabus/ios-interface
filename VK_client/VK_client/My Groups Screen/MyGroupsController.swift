@@ -94,9 +94,7 @@ class MyGroupsController: UITableViewController {
         
         cell.groupName.text = myGroupGeneralArray[indexPath.row].name
         
-        let url = myGroupGeneralArray[indexPath.row].photo_100
-        
-        cell.myGroupImageView.image = photoService?.photo(atIndexpath: indexPath, byUrl: url)
+        cell.myGroupImageView.image = photoService?.photo(atIndexpath: indexPath, byUrl: myGroupGeneralArray[indexPath.row].photo_100)
         
         cell.parentContainerView.shadow()
         cell.childContainerView.circle()
