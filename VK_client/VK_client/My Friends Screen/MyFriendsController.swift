@@ -93,9 +93,8 @@ class MyFriendsController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! MyFriendsCell
         
         cell.friendName.text = generalUsersArray[indexPath.row].first_name + " " + generalUsersArray[indexPath.row].last_name
-        let url = generalUsersArray[indexPath.row].photo_100
         
-        cell.friendIconImageView.image = photoService?.photo(atIndexpath: indexPath, byUrl: url)
+        cell.friendIconImageView.image = photoService?.photo(atIndexpath: indexPath, byUrl: generalUsersArray[indexPath.row].photo_100)
         
         cell.parentContainerView.shadow()
         cell.childContainerView.circle()

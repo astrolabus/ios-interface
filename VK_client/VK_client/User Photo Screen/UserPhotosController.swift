@@ -75,8 +75,7 @@ class UserPhotosController: UICollectionViewController {
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "userPhotoCell", for: indexPath) as! UserPhotosCell
         
-        let url = array[indexPath.row].url
-        cell.userPhoto.image = photoService?.photo(atIndexpath: indexPath, byUrl: url)
+        cell.userPhoto.image = photoService?.photo(atIndexpath: indexPath, byUrl: array[indexPath.row].url)
                 
         return cell
     }
